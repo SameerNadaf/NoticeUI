@@ -21,17 +21,24 @@ struct ToastModifier: ViewModifier {
     @State private var workItem: DispatchWorkItem?
     @State private var isPresented = false
     
+    @Environment(\.toastStyle) private var style
+    
     func body(content: Content) -> some View {
         content
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay {
                 if let toast {
                     ToastView(toast: toast, isPresented: isPresented)
+                        .environment(\.toastStyle, style)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .ignoresSafeArea()
                         .onTapGesture {
                             dismissToast()
                         }
                         .accessibilityElement(children: .combine)
                         .accessibilityLabel(accessibilityLabel(for: toast))
                         .accessibilityAddTraits(.isStaticText)
+                        .allowsHitTesting(true)
                 }
             }
             .onChange(of: toast) { newValue in

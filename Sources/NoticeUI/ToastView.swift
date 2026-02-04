@@ -16,34 +16,38 @@ struct ToastView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            style.makeBody(
-                configuration: ToastStyleConfiguration(
-                    message: toast.message,
-                    role: toast.role
-                )
-            )
-            .frame(maxWidth: min(geometry.size.width - 32, 400))
-            .position(position(in: geometry))
-            .opacity(isPresented ? 1 : 0)
-            .offset(y: animationOffset)
-            .animation(animation, value: isPresented)
+            VStack {
+                switch toast.placement {
+                case .top:
+                    toastContent
+                        .padding(.top, geometry.safeAreaInsets.top + 16)
+                    Spacer()
+                case .center:
+                    Spacer()
+                    toastContent
+                    Spacer()
+                case .bottom:
+                    Spacer()
+                    toastContent
+                        .padding(.bottom, geometry.safeAreaInsets.bottom + 16)
+                }
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height)
         }
+        .opacity(isPresented ? 1 : 0)
+        .offset(y: animationOffset)
+        .animation(animation, value: isPresented)
     }
     
-    // MARK: - Layout
-    
-    private func position(in geometry: GeometryProxy) -> CGPoint {
-        let x = geometry.size.width / 2
-        let safeArea = geometry.safeAreaInsets
-        
-        switch toast.placement {
-        case .top:
-            return CGPoint(x: x, y: safeArea.top + 60)
-        case .center:
-            return CGPoint(x: x, y: geometry.size.height / 2)
-        case .bottom:
-            return CGPoint(x: x, y: geometry.size.height - safeArea.bottom - 60)
-        }
+    private var toastContent: some View {
+        style.makeBody(
+            configuration: ToastStyleConfiguration(
+                message: toast.message,
+                role: toast.role
+            )
+        )
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 16)
     }
     
     // MARK: - Animation
@@ -54,11 +58,11 @@ struct ToastView: View {
         
         switch toast.placement {
         case .top:
-            return -20
+            return -50
         case .center:
             return 0
         case .bottom:
-            return 20
+            return 50
         }
     }
     
@@ -115,3 +119,4 @@ struct ToastView: View {
     .toastStyle(VibrantToastStyle())
 }
 #endif
+
