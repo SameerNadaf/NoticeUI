@@ -34,6 +34,9 @@ public struct Toast: Identifiable, Sendable, Equatable {
     /// How long the toast remains visible.
     public let duration: ToastDuration
     
+    /// Haptic feedback to trigger when toast appears.
+    public let haptic: ToastHapticFeedback
+    
     /// Creates a new toast notification.
     /// - Parameters:
     ///   - message: The message to display.
@@ -41,12 +44,14 @@ public struct Toast: Identifiable, Sendable, Equatable {
     ///   - icon: Optional custom SF Symbol name. Defaults to `nil` (uses role icon).
     ///   - placement: Where to show the toast. Defaults to `.top`.
     ///   - duration: How long to show the toast. Defaults to `.short`.
+    ///   - haptic: Haptic feedback to trigger. Defaults to `.none`.
     public init(
         message: String,
         role: ToastRole = .info,
         icon: String? = nil,
         placement: ToastPlacement = .top,
-        duration: ToastDuration = .short
+        duration: ToastDuration = .short,
+        haptic: ToastHapticFeedback = .automatic
     ) {
         self.id = UUID()
         self.message = message
@@ -54,5 +59,6 @@ public struct Toast: Identifiable, Sendable, Equatable {
         self.icon = icon
         self.placement = placement
         self.duration = duration
+        self.haptic = haptic
     }
 }

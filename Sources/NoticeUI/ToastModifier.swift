@@ -58,6 +58,9 @@ struct ToastModifier: ViewModifier {
                 isPresented = true
             }
             
+            // Trigger haptic feedback
+            toast.haptic.trigger(for: toast.role)
+            
             // Announce to VoiceOver
             announceToast(toast)
             
@@ -67,6 +70,7 @@ struct ToastModifier: ViewModifier {
                 let adjustedDuration = voiceOverEnabled ? duration * 1.5 : duration
                 scheduleDismiss(after: adjustedDuration)
             }
+
         } else {
             // Hide toast
             withAnimation {
