@@ -1,5 +1,9 @@
 import SwiftUI
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 /// Internal view that renders a toast using the current style.
 ///
 /// `ToastView` is responsible for:
@@ -16,11 +20,12 @@ struct ToastView: View {
     
     var body: some View {
         GeometryReader { geometry in
+            let safeArea = windowSafeAreaInsets
             VStack {
                 switch toast.placement {
                 case .top:
                     toastContent
-                        .padding(.top, geometry.safeAreaInsets.top + 16)
+                        .padding(.top, safeArea.top + 16)
                     Spacer()
                 case .center:
                     Spacer()
@@ -29,7 +34,7 @@ struct ToastView: View {
                 case .bottom:
                     Spacer()
                     toastContent
-                        .padding(.bottom, geometry.safeAreaInsets.bottom + 16)
+                        .padding(.bottom, safeArea.bottom + 16)
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
@@ -37,6 +42,20 @@ struct ToastView: View {
         .opacity(isPresented ? 1 : 0)
         .offset(y: animationOffset)
         .animation(animation, value: isPresented)
+    }
+    
+    /// Gets safe area insets from the window (works even when ignoresSafeArea is used)
+    private var windowSafeAreaInsets: EdgeInsets {
+        #if canImport(UIKit)
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first else {
+            return EdgeInsets()
+        }
+        let insets = window.safeAreaInsets
+        return EdgeInsets(top: insets.top, leading: insets.left, bottom: insets.bottom, trailing: insets.right)
+        #else
+        return EdgeInsets()
+        #endif
     }
     
     private var toastContent: some View {
