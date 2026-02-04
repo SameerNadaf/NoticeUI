@@ -38,16 +38,17 @@ public protocol ToastStyle: Sendable {
 // MARK: - Environment Key for Toast Style
 
 /// Type-erased wrapper for ToastStyle to enable environment storage.
-struct AnyToastStyle: ToastStyle {
+/// Type-erased wrapper for ToastStyle to enable environment storage.
+public struct AnyToastStyle: ToastStyle {
     private let _makeBody: @Sendable (ToastStyleConfiguration) -> AnyView
     
-    init<S: ToastStyle>(_ style: S) {
+    public init<S: ToastStyle>(_ style: S) {
         self._makeBody = { configuration in
             AnyView(style.makeBody(configuration: configuration))
         }
     }
     
-    func makeBody(configuration: ToastStyleConfiguration) -> some View {
+    public func makeBody(configuration: ToastStyleConfiguration) -> some View {
         _makeBody(configuration)
     }
 }

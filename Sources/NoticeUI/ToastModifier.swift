@@ -41,6 +41,7 @@ struct ToastModifier: ViewModifier {
                         .accessibilityLabel(accessibilityLabel(for: toast))
                         .accessibilityAddTraits(.isStaticText)
                         .allowsHitTesting(true)
+                        .zIndex(999)
                 }
             }
             .onChange(of: toast) { newValue in
