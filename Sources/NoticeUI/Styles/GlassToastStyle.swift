@@ -17,7 +17,7 @@ public struct GlassToastStyle: ToastStyle, Sendable {
                 .fill(roleColor(for: configuration.role).opacity(0.15))
                 .frame(width: 40, height: 40)
                 .overlay(
-                    roleIcon(for: configuration.role)
+                    icon(for: configuration)
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundStyle(roleColor(for: configuration.role))
                 )
@@ -50,6 +50,13 @@ public struct GlassToastStyle: ToastStyle, Sendable {
     }
     
     // MARK: - Private Helpers
+    
+    private func icon(for configuration: ToastStyleConfiguration) -> Image {
+        if let customIcon = configuration.icon {
+            return Image(systemName: customIcon)
+        }
+        return roleIcon(for: configuration.role)
+    }
     
     private func roleIcon(for role: ToastRole) -> Image {
         switch role {

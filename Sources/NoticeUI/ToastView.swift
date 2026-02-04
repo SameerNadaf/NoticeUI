@@ -43,7 +43,8 @@ struct ToastView: View {
         style.makeBody(
             configuration: ToastStyleConfiguration(
                 message: toast.message,
-                role: toast.role
+                role: toast.role,
+                icon: toast.icon
             )
         )
         .frame(maxWidth: .infinity)

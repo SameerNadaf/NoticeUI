@@ -11,12 +11,17 @@ public struct ToastStyleConfiguration: Sendable {
     /// The semantic role of the toast.
     public let role: ToastRole
     
+    /// Optional custom SF Symbol name to use instead of the default role icon.
+    public let icon: String?
+    
     /// Creates a new style configuration.
     /// - Parameters:
     ///   - message: The message to display.
     ///   - role: The semantic role of the toast.
-    public init(message: String, role: ToastRole) {
+    ///   - icon: Optional custom SF Symbol name.
+    public init(message: String, role: ToastRole, icon: String? = nil) {
         self.message = message
         self.role = role
+        self.icon = icon
     }
 }
