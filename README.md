@@ -14,6 +14,8 @@ A production-quality, pure SwiftUI Toast library for iOS and macOS. NoticeUI pro
   - `GlassToastStyle` (Default)
   - `PaleToastStyle`
   - `VibrantToastStyle`
+- **Interactive**: Swipe to dismiss support (placement-aware).
+- **Haptic Feedback**: Meaningful haptic feedback for different notification types.
 - **Accessibility First**: Full VoiceOver support, accessible announcements, and Reduce Motion usage.
 - **Cross-Platform**: Supports iOS 16+ and macOS 13+.
 
@@ -52,16 +54,28 @@ struct ContentView: View {
 }
 ```
 
-### Roles & Duration
+> [!TIP]
+> When using `NavigationStack` or `NavigationView`, apply the `.toast()` modifier **outside** the navigation container. This ensures the toast appears above the navigation bar.
+>
+> ```swift
+> NavigationStack {
+>    // Content
+> }
+> .toast($toast) // Correct placement
+> ```
 
-You can customize the toast role, duration, and placement:
+### Full Configuration
+
+You can customize the toast role, icon, duration, placement, and haptic feedback:
 
 ```swift
 Toast(
     message: "Network error occurred",
     role: .error,
+    icon: "wifi.slash",        // Custom SF Symbol
     placement: .top,
-    duration: .long // 4 seconds
+    duration: .long,           // 4 seconds
+    haptic: .error             // Triggers error haptic feedback
 )
 ```
 
@@ -119,6 +133,26 @@ struct MyApp: App {
     }
 }
 ```
+
+## Interactive Features
+
+### Swipe to Dismiss
+
+Toasts support swipe gestures to dismiss them early:
+
+- **Top placement**: Swipe UP to dismiss
+- **Bottom placement**: Swipe DOWN to dismiss
+- **Center placement**: Swipe LEFT or RIGHT to dismiss
+
+### Haptic Feedback
+
+NoticeUI includes a `ToastHapticFeedback` system that can trigger haptics when a toast appears.
+
+- `.success`: Light impact followed by heavy impact
+- `.error`: Series of heavy impacts
+- `.warning`: Medium impact
+- `.light`, `.medium`, `.heavy`: Standard impacts
+- `.automatic`: Automatically picks the haptic based on the toast role
 
 ## Accessibility
 
