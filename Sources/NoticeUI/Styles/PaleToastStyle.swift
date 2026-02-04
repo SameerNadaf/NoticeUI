@@ -100,3 +100,40 @@ public struct PaleToastStyle: ToastStyle, Sendable {
         }
     }
 }
+
+// MARK: - Previews
+
+#if DEBUG
+#Preview("Pale - All Roles") {
+    VStack(spacing: 16) {
+        ForEach([ToastRole.success, .error, .warning, .info], id: \.self) { role in
+            PaleToastStyle().makeBody(
+                configuration: ToastStyleConfiguration(
+                    message: "This is a \(String(describing: role)) message",
+                    role: role
+                )
+            )
+        }
+    }
+    .padding()
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color(.systemBackground))
+}
+
+#Preview("Pale - Dark Mode") {
+    VStack(spacing: 16) {
+        ForEach([ToastRole.success, .error, .warning, .info], id: \.self) { role in
+            PaleToastStyle().makeBody(
+                configuration: ToastStyleConfiguration(
+                    message: "This is a \(String(describing: role)) message",
+                    role: role
+                )
+            )
+        }
+    }
+    .padding()
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color(.systemBackground))
+    .preferredColorScheme(.dark)
+}
+#endif

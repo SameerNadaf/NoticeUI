@@ -90,3 +90,40 @@ public struct VibrantToastStyle: ToastStyle, Sendable {
         }
     }
 }
+
+// MARK: - Previews
+
+#if DEBUG
+#Preview("Vibrant - All Roles") {
+    VStack(spacing: 16) {
+        ForEach([ToastRole.success, .error, .warning, .info], id: \.self) { role in
+            VibrantToastStyle().makeBody(
+                configuration: ToastStyleConfiguration(
+                    message: "This is a \(String(describing: role)) message",
+                    role: role
+                )
+            )
+        }
+    }
+    .padding()
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color(.systemBackground))
+}
+
+#Preview("Vibrant - Dark Mode") {
+    VStack(spacing: 16) {
+        ForEach([ToastRole.success, .error, .warning, .info], id: \.self) { role in
+            VibrantToastStyle().makeBody(
+                configuration: ToastStyleConfiguration(
+                    message: "This is a \(String(describing: role)) message",
+                    role: role
+                )
+            )
+        }
+    }
+    .padding()
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color(.systemBackground))
+    .preferredColorScheme(.dark)
+}
+#endif
