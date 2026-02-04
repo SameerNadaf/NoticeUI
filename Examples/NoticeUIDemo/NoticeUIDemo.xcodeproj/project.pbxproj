@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2F9234862F3325DA00F3E934 /* NoticeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 2F9234852F3325DA00F3E934 /* NoticeUI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		2F9234762F33245400F3E934 /* NoticeUIDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NoticeUIDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2F9234862F3325DA00F3E934 /* NoticeUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = NoticeUIDemo;
 			packageProductDependencies = (
+				2F9234852F3325DA00F3E934 /* NoticeUI */,
 			);
 			productName = NoticeUIDemo;
 			productReference = 2F9234762F33245400F3E934 /* NoticeUIDemo.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 2F92346D2F33245400F3E934;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				2F9234842F3325DA00F3E934 /* XCLocalSwiftPackageReference "../../../NoticeUI" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2F9234772F33245400F3E934 /* Products */;
 			projectDirPath = "";
@@ -332,6 +341,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		2F9234842F3325DA00F3E934 /* XCLocalSwiftPackageReference "../../../NoticeUI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../../NoticeUI;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2F9234852F3325DA00F3E934 /* NoticeUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NoticeUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2F92346E2F33245400F3E934 /* Project object */;
 }
