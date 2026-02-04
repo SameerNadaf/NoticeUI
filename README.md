@@ -1,0 +1,139 @@
+# NoticeUI
+
+A production-quality, pure SwiftUI Toast library for iOS and macOS. NoticeUI provides a clean, state-driven API for displaying beautiful, accessible, and customizable toast notifications.
+
+## Features
+
+- **SwiftUI Native**: Built entirely with SwiftUI for seamless integration.
+- **State-Driven API**: Manage toasts using a simple `@State` binding.
+- **Multiple Roles**: Built-in support for `success`, `error`, `warning`, and `info` roles.
+- **Flexible Placement**: Position toasts at `top`, `center`, or `bottom`.
+- **Beautiful Styles**: Includes 3 premium built-in styles:
+  - `GlassToastStyle` (Default)
+  - `PaleToastStyle`
+  - `VibrantToastStyle`
+- **Accessibility First**: Full VoiceOver support, accessible announcements, and Reduce Motion usage.
+- **Cross-Platform**: Supports iOS 16+ and macOS 13+.
+
+## Installation
+
+### Swift Package Manager
+
+Add `NoticeUI` to your project via Swift Package Manager:
+
+1. In Xcode, go to **File > Add Packages...**
+2. Enter the repository URL: `https://github.com/SameerNadaf/NoticeUI.git`
+3. Select the version (e.g., `1.0.0` or `main`)
+4. Add the `NoticeUI` product to your target.
+
+## Usage
+
+### Basic Example
+
+1. Import `NoticeUI`
+2. Create a `@State` property for your toast
+3. Use the `.toast($toast)` modifier
+
+```swift
+import SwiftUI
+import NoticeUI
+
+struct ContentView: View {
+    @State private var toast: Toast?
+
+    var body: some View {
+        Button("Show Success") {
+            toast = Toast(message: "Operation completed!", role: .success)
+        }
+        .toast($toast)
+    }
+}
+```
+
+### Roles & Duration
+
+You can customize the toast role, duration, and placement:
+
+```swift
+Toast(
+    message: "Network error occurred",
+    role: .error,
+    placement: .top,
+    duration: .long // 4 seconds
+)
+```
+
+**Supported Roles:**
+
+- `.success`
+- `.error`
+- `.warning`
+- `.info`
+
+**Supported Durations:**
+
+- `.short` (2s)
+- `.long` (4s)
+- `.custom(TimeInterval)`
+- `.indefinite` (Explicit dismissal required)
+
+### Styling
+
+NoticeUI comes with three built-in styles. You can apply a style globally or to a specific toast.
+
+**1. Glass Style (Default)**
+A translucent, frosted-glass look.
+
+```swift
+.toast($toast, style: GlassToastStyle())
+```
+
+**2. Vibrant Style**
+High-contrast, solid background colors. Best for critical alerts.
+
+```swift
+.toast($toast, style: VibrantToastStyle())
+```
+
+**3. Pale Style**
+Subtle, light background with a role-colored accent border.
+
+```swift
+.toast($toast, style: PaleToastStyle())
+```
+
+### Global Styling
+
+Apply a style to an entire view hierarchy using the environment:
+
+```swift
+@main
+struct MyApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .toastStyle(VibrantToastStyle()) // All toasts in app will use Vibrant style
+        }
+    }
+}
+```
+
+## Accessibility
+
+NoticeUI is built with accessibility as a priority:
+
+- **VoiceOver**: Automatically announces (or "speaks") the toast message when it appears.
+- **Role Context**: Announcements include the role (e.g., "Error: Network failed") for context.
+- **Reduce Motion**: Respects the user's "Reduce Motion" system setting by using simpler fade animations instead of slides.
+- **Dynamic Type**: Supports dynamic text scaling.
+- **Time Extension**: Automatically extends specific durations (1.5x) when VoiceOver is active to give users more time to read.
+
+## Requirements
+
+- iOS 16.0+
+- macOS 13.0+
+- Swift 5.7+
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
