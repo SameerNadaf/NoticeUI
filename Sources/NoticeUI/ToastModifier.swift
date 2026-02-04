@@ -31,6 +31,9 @@ struct ToastModifier: ViewModifier {
                         .environment(\.toastStyle, style)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .ignoresSafeArea()
+                        .swipeToDismiss(placement: toast.placement) {
+                            dismissToast()
+                        }
                         .onTapGesture {
                             dismissToast()
                         }
