@@ -2,6 +2,8 @@
 
 A production-quality, pure SwiftUI Toast library for iOS and macOS. NoticeUI provides a clean, state-driven API for displaying beautiful, accessible, and customizable toast notifications.
 
+![NoticeUI Styles](https://github.com/SameerNadaf/Templates/blob/main/NoticeUI.png?raw=true)
+
 ## Features
 
 - **SwiftUI Native**: Built entirely with SwiftUI for seamless integration.
