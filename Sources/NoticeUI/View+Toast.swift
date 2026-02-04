@@ -33,7 +33,7 @@ extension View {
     ///   the toast is displayed. Set to nil to dismiss.
     /// - Returns: A view that can display toast notifications.
     public func toast(_ toast: Binding<Toast?>) -> some View {
-        modifier(ToastModifier(toast: toast))
+        modifier(ToastModifier(toast: toast, style: AnyToastStyle(GlassToastStyle())))
     }
     
     /// Presents a toast notification with a custom style.
@@ -51,8 +51,7 @@ extension View {
     ///   - style: The style to use for rendering the toast.
     /// - Returns: A view that can display toast notifications.
     public func toast<S: ToastStyle>(_ toast: Binding<Toast?>, style: S) -> some View {
-        self
-            .toastStyle(style)
-            .modifier(ToastModifier(toast: toast))
+        modifier(ToastModifier(toast: toast, style: AnyToastStyle(style)))
     }
 }
+

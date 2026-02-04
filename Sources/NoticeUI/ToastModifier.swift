@@ -17,11 +17,10 @@ import AppKit
 /// - Duration extension when VoiceOver is active
 struct ToastModifier: ViewModifier {
     @Binding var toast: Toast?
+    let style: AnyToastStyle
     
     @State private var workItem: DispatchWorkItem?
     @State private var isPresented = false
-    
-    @Environment(\.toastStyle) private var style
     
     func body(content: Content) -> some View {
         content
