@@ -6,7 +6,8 @@ import PackageDescription
 let package = Package(
     name: "NoticeUI",
     platforms: [
-        .iOS(.v16)
+        .iOS(.v16),
+        .macOS(.v13)
     ],
     products: [
         .library(
