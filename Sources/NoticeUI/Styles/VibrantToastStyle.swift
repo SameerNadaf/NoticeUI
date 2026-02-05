@@ -44,8 +44,7 @@ public struct VibrantToastStyle: ToastStyle, Sendable {
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(roleColor(for: configuration.role))
+            VibrantBackgroundView(role: configuration.role)
         )
     }
     
@@ -83,17 +82,43 @@ public struct VibrantToastStyle: ToastStyle, Sendable {
             return "Info"
         }
     }
+}
+
+// MARK: - Private Views
+
+private struct VibrantBackgroundView: View {
+    let role: ToastRole
     
-    private func roleColor(for role: ToastRole) -> Color {
-        switch role {
-        case .success:
-            return Color(red: 0.35, green: 0.78, blue: 0.62)  // Mint green
-        case .error:
-            return Color(red: 0.91, green: 0.45, blue: 0.47)  // Soft red
-        case .warning:
-            return Color(red: 0.95, green: 0.77, blue: 0.35)  // Golden yellow
-        case .info:
-            return Color(red: 0.40, green: 0.65, blue: 0.88)  // Sky blue
+    @Environment(\.colorScheme) var colorScheme
+    
+    var body: some View {
+        RoundedRectangle(cornerRadius: 12, style: .continuous)
+            .fill(backgroundColor)
+    }
+    
+    private var backgroundColor: Color {
+        if colorScheme == .dark {
+            switch role {
+            case .success:
+                return Color(red: 0.20, green: 0.55, blue: 0.40) // Deeper Mint
+            case .error:
+                return Color(red: 0.75, green: 0.30, blue: 0.32) // Deeper Red
+            case .warning:
+                return Color(red: 0.80, green: 0.60, blue: 0.20) // Deeper Gold
+            case .info:
+                return Color(red: 0.25, green: 0.45, blue: 0.70) // Deeper Blue
+            }
+        } else {
+            switch role {
+            case .success:
+                return Color(red: 0.35, green: 0.78, blue: 0.62)  // Bright Mint
+            case .error:
+                return Color(red: 0.91, green: 0.45, blue: 0.47)  // Bright Red
+            case .warning:
+                return Color(red: 0.95, green: 0.77, blue: 0.35)  // Bright Gold
+            case .info:
+                return Color(red: 0.40, green: 0.65, blue: 0.88)  // Bright Blue
+            }
         }
     }
 }
@@ -114,7 +139,7 @@ public struct VibrantToastStyle: ToastStyle, Sendable {
     }
     .padding()
     .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color(.systemBackground))
+    .background(Color.gray.opacity(0.1))
 }
 
 #Preview("Vibrant - Dark Mode") {
@@ -130,7 +155,7 @@ public struct VibrantToastStyle: ToastStyle, Sendable {
     }
     .padding()
     .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color(.systemBackground))
+    .background(Color.gray.opacity(0.1))
     .preferredColorScheme(.dark)
 }
 #endif
