@@ -1,10 +1,16 @@
 import SwiftUI
 
-/// A glass-like toast style using system materials.
+/// A premium liquid glass toast style.
 ///
-/// This style provides a translucent background with the system's
-/// ultra-thin material, giving a frosted glass appearance. The role
-/// is indicated by a subtle accent color.
+/// This style replicates a modern "liquid glass" aesthetic often seen in high-end
+/// iOS interfaces. It uses a combination of system materials, gradient overlays,
+/// and subtle borders to create a depth-rich, glossy appearance.
+///
+/// ## Visual Design
+/// - Heavy blur material for rich background distortion
+/// - White gradient overlay for a "liquid" sheen
+/// - Soft shadow matching the role color
+/// - Refined typography and iconography
 public struct GlassToastStyle: ToastStyle, Sendable {
     
     /// Creates a new glass toast style.
@@ -39,14 +45,55 @@ public struct GlassToastStyle: ToastStyle, Sendable {
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(.ultraThinMaterial)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .stroke(roleColor(for: configuration.role).opacity(0.3), lineWidth: 1)
-                )
+            ZStack {
+                // 1. Base Material
+                // Using regularMaterial for substantial blur, shape clipped
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(.regularMaterial)
+                
+                // 2. Liquid Sheen Gradient
+                // Top-left to bottom-right white gradient for "gloss"
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                .white.opacity(0.25),
+                                .white.opacity(0.05),
+                                .white.opacity(0.0)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                
+                // 3. Border Stroke
+                // Gradient stroke to simulate light hitting the top edge
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .strokeBorder(
+                        LinearGradient(
+                            colors: [
+                                .white.opacity(0.5),
+                                .white.opacity(0.1),
+                                .black.opacity(0.05)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1
+                    )
+            }
         )
-        .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+        // 4. Soft Colored Shadow
+        // subtle glow matching the role color
+        .shadow(
+            color: roleColor(for: configuration.role).opacity(0.15),
+            radius: 12,
+            x: 0,
+            y: 8
+        )
+        // 5. Hard Drop Shadow
+        // for distinct separation
+        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
     }
     
     // MARK: - Private Helpers
@@ -114,7 +161,14 @@ public struct GlassToastStyle: ToastStyle, Sendable {
     }
     .padding()
     .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color(.systemBackground))
+    .background(
+        // Using a gradient background to demonstrate the glass effect
+        LinearGradient(
+            colors: [.blue, .purple, .pink],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    )
 }
 
 #Preview("Glass - Dark Mode") {
@@ -130,7 +184,14 @@ public struct GlassToastStyle: ToastStyle, Sendable {
     }
     .padding()
     .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color(.systemBackground))
+    .background(
+        // Using a dark gradient background
+        LinearGradient(
+            colors: [.black, .gray.opacity(0.5)],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    )
     .preferredColorScheme(.dark)
 }
 #endif
