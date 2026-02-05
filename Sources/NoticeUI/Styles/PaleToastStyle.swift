@@ -45,17 +45,7 @@ public struct PaleToastStyle: ToastStyle, Sendable {
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(roleColor(for: configuration.role).opacity(0.12))
-                .overlay(
-                    HStack {
-                        RoundedRectangle(cornerRadius: 2)
-                            .fill(roleColor(for: configuration.role))
-                            .frame(width: 4)
-                        Spacer()
-                    }
-                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                )
+            PaleBackgroundView(role: configuration.role, accentColor: roleColor(for: configuration.role))
         )
     }
     
@@ -108,6 +98,55 @@ public struct PaleToastStyle: ToastStyle, Sendable {
     }
 }
 
+// MARK: - Private Views
+
+private struct PaleBackgroundView: View {
+    let role: ToastRole
+    let accentColor: Color
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    var body: some View {
+        RoundedRectangle(cornerRadius: 12, style: .continuous)
+            .fill(backgroundColor)
+            .overlay(
+                HStack {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(accentColor)
+                        .frame(width: 4)
+                    Spacer()
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            )
+    }
+    
+    private var backgroundColor: Color {
+        if colorScheme == .dark {
+            switch role {
+            case .success:
+                return Color(red: 0.05, green: 0.20, blue: 0.10)
+            case .error:
+                return Color(red: 0.25, green: 0.10, blue: 0.10)
+            case .warning:
+                return Color(red: 0.20, green: 0.18, blue: 0.05)
+            case .info:
+                return Color(red: 0.10, green: 0.15, blue: 0.30)
+            }
+        } else {
+            switch role {
+            case .success:
+                return Color(red: 0.92, green: 0.98, blue: 0.95)
+            case .error:
+                return Color(red: 0.99, green: 0.93, blue: 0.93)
+            case .warning:
+                return Color(red: 0.99, green: 0.97, blue: 0.92)
+            case .info:
+                return Color(red: 0.93, green: 0.96, blue: 0.99)
+            }
+        }
+    }
+}
+
 // MARK: - Previews
 
 #if DEBUG
@@ -124,7 +163,7 @@ public struct PaleToastStyle: ToastStyle, Sendable {
     }
     .padding()
     .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color(.systemBackground))
+    .background(Color.gray.opacity(0.1))
 }
 
 #Preview("Pale - Dark Mode") {
@@ -140,7 +179,7 @@ public struct PaleToastStyle: ToastStyle, Sendable {
     }
     .padding()
     .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color(.systemBackground))
+    .background(Color.gray.opacity(0.1))
     .preferredColorScheme(.dark)
 }
 #endif
