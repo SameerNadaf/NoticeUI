@@ -55,7 +55,7 @@ customizable toast messages without UIKit hacks.
 
 https://github.com/SameerNadaf/NoticeUI.git
 
-````
+```
 
 3. Select version: **from 1.2.2**
 
@@ -77,7 +77,7 @@ struct ContentView: View {
         .toast($toast)
     }
 }
-````
+```
 
 > When using `NavigationStack` or `NavigationView`, apply the `.toast()` modifier **outside** the navigation container. This ensures the toast appears above the navigation bar.
 >
@@ -105,17 +105,17 @@ Toast(
 
 ### Supported Roles
 
-* `.success`
-* `.error`
-* `.warning`
-* `.info`
+- `.success`
+- `.error`
+- `.warning`
+- `.info`
 
 ### Supported Durations
 
-* `.short` (2s)
-* `.long` (4s)
-* `.custom(TimeInterval)`
-* `.indefinite`
+- `.short` (2s)
+- `.long` (4s)
+- `.custom(TimeInterval)`
+- `.indefinite`
 
 <br/>
 
@@ -137,6 +137,24 @@ Toast(
 
 ```swift
 .toast($toast, style: PaleToastStyle())
+```
+
+### Capsule
+
+```swift
+.toast($toast, style: CapsuleToastStyle())
+```
+
+### Retro
+
+```swift
+.toast($toast, style: RetroToastStyle())
+```
+
+### Notification
+
+```swift
+.toast($toast, style: NotificationToastStyle())
 ```
 
 ### Global Style
@@ -173,9 +191,9 @@ struct MyApp: App {
 
 Built-in feedback system:
 
-* Automatic by role
-* Success, error, warning
-* Light / medium / heavy
+- Automatic by role
+- Success, error, warning
+- Light / medium / heavy
 
 <br/>
 
@@ -183,27 +201,27 @@ Built-in feedback system:
 
 NoticeUI is designed for real-world accessibility:
 
-* VoiceOver announcements
-* Role-aware context
-* Reduce Motion support
-* Dynamic Type scaling
-* Extended display time when VoiceOver is active
+- VoiceOver announcements
+- Role-aware context
+- Reduce Motion support
+- Dynamic Type scaling
+- Extended display time when VoiceOver is active
 
 <br/>
 
 ## 🚫 When Not to Use
 
-* If you need system notifications
-* If you support iOS below 16
-* If you rely heavily on UIKit overlays
+- If you need system notifications
+- If you support iOS below 16
+- If you rely heavily on UIKit overlays
 
 <br/>
 
 ## 📋 Requirements
 
-* iOS 16.0+
-* macOS 13.0+
-* Swift 5.7+
+- iOS 16.0+
+- macOS 13.0+
+- Swift 5.7+
 
 <br/>
 
