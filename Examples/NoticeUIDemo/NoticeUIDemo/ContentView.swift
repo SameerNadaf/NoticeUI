@@ -20,6 +20,9 @@ struct ContentView: View {
         case glass = "Glass"
         case pale = "Pale"
         case vibrant = "Vibrant"
+        case capsule = "Capsule"
+        case retro = "Retro"
+        case notification = "Notification"
         
         var id: String { rawValue }
     }
@@ -44,12 +47,23 @@ struct ContentView: View {
         NavigationStack {
             Form {
                 Section("Configuration") {
-                    Picker("Style", selection: $selectedStyle) {
-                        ForEach(ToStringStyle.allCases) { style in
-                            Text(style.rawValue).tag(style)
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Style")
+                        
+                        Picker("Style Row 1", selection: $selectedStyle) {
+                            ForEach(Array(ToStringStyle.allCases.prefix(3))) { style in
+                                Text(style.rawValue).tag(style)
+                            }
                         }
+                        .pickerStyle(.segmented)
+                        
+                        Picker("Style Row 2", selection: $selectedStyle) {
+                            ForEach(Array(ToStringStyle.allCases.dropFirst(3))) { style in
+                                Text(style.rawValue).tag(style)
+                            }
+                        }
+                        .pickerStyle(.segmented)
                     }
-                    .pickerStyle(.segmented)
                     
                     Picker("Placement", selection: $placement) {
                         Text("Top").tag(ToastPlacement.top)
@@ -72,7 +86,7 @@ struct ContentView: View {
                     Button {
                         showToast(
                             message: "Operation completed successfully",
-                            role: .success
+                            role: .success,
                         )
                     } label: {
                         Label("Show Success", systemImage: "checkmark.circle.fill")
@@ -141,6 +155,12 @@ struct ContentView: View {
             return AnyToastStyle(PaleToastStyle())
         case .vibrant:
             return AnyToastStyle(VibrantToastStyle())
+        case .capsule:
+            return AnyToastStyle(CapsuleToastStyle())
+        case .retro:
+            return AnyToastStyle(RetroToastStyle())
+        case .notification:
+            return AnyToastStyle(NotificationToastStyle())
         }
     }
 }
