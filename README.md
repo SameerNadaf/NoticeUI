@@ -1,46 +1,67 @@
-[![Release](https://img.shields.io/github/v/release/SameerNadaf/NoticeUI)](https://github.com/SameerNadaf/NoticeUI/releases)
-![Swift](https://img.shields.io/badge/Swift-5.7-orange)
-![Platforms](https://img.shields.io/badge/Platforms-iOS%2016%2B%20|%20macOS%2013%2B-blue)
+[![Release](https://img.shields.io/github/v/release/SameerNadaf/NoticeUI?style=flat-square)](https://github.com/SameerNadaf/NoticeUI/releases)
+![Swift](https://img.shields.io/badge/Swift-5.7%2B-orange?style=flat-square)
+![Platforms](https://img.shields.io/badge/Platforms-iOS%2016%2B%20|%20macOS%2013%2B-blue?style=flat-square)
 
 # NoticeUI
 
-A production-quality, pure SwiftUI Toast library for iOS and macOS. NoticeUI provides a clean, state-driven API for displaying beautiful, accessible, and customizable toast notifications.
+NoticeUI is a lightweight **SwiftUI toast notification and in-app messaging library**
+for iOS and macOS — similar to snackbars and alerts — built entirely with SwiftUI.
+
+It provides a clean, state-driven API for displaying beautiful, accessible, and fully
+customizable toast messages without UIKit hacks.
+
+<br/>
 
 ![NoticeUI Styles](https://github.com/SameerNadaf/Templates/blob/main/NoticeUI.png?raw=true)
 
-## Features
+<br/>
 
-- **SwiftUI Native**: Built entirely with SwiftUI for seamless integration.
-- **State-Driven API**: Manage toasts using a simple `@State` binding.
-- **Multiple Roles**: Built-in support for `success`, `error`, `warning`, and `info` roles.
-- **Flexible Placement**: Position toasts at `top`, `center`, or `bottom`.
-- **Beautiful Styles**: Includes 3 premium built-in styles:
-  - `GlassToastStyle` (Default)
+## ✨ Why NoticeUI?
+
+- Built purely for SwiftUI (no UIKit wrappers)
+- Simple state-driven API
+- Accessibility-first by default
+- Modern animations and gestures
+- Works seamlessly on iOS & macOS
+- Easy global and per-toast styling
+
+<br/>
+
+## 🚀 Features
+
+- **SwiftUI Native**
+- **State-Driven API**
+- **Toast Roles** — success, error, warning, info
+- **Flexible Placement** — top, center, bottom
+- **Premium Styles**
+  - `GlassToastStyle` (default frosted look)
   - `PaleToastStyle`
   - `VibrantToastStyle`
-- **Interactive**: Swipe to dismiss support (placement-aware).
-- **Haptic Feedback**: Meaningful haptic feedback for different notification types.
-- **Accessibility First**: Full VoiceOver support, accessible announcements, and Reduce Motion usage.
-- **Cross-Platform**: Supports iOS 16+ and macOS 13+.
+- **Swipe to Dismiss**
+- **Haptic Feedback**
+- **Accessibility First**
+- **Cross-Platform Support**
 
-## Installation
+<br/>
+
+## 📦 Installation
 
 ### Swift Package Manager
 
-Add `NoticeUI` to your project via Swift Package Manager:
+1. In Xcode: **File → Add Packages...**
+2. Enter:
 
-1. In Xcode, go to **File > Add Packages...**
-2. Enter the repository URL: `https://github.com/SameerNadaf/NoticeUI.git`
-3. Select the version (e.g., `1.0.0` or `main`)
-4. Add the `NoticeUI` product to your target.
+```
 
-## Usage
+https://github.com/SameerNadaf/NoticeUI.git
 
-### Basic Example
+````
 
-1. Import `NoticeUI`
-2. Create a `@State` property for your toast
-3. Use the `.toast($toast)` modifier
+3. Select version: **from 1.2.2**
+
+<br/>
+
+## 🧑‍💻 Quick Start
 
 ```swift
 import SwiftUI
@@ -56,75 +77,71 @@ struct ContentView: View {
         .toast($toast)
     }
 }
-```
+````
 
-> [!TIP]
 > When using `NavigationStack` or `NavigationView`, apply the `.toast()` modifier **outside** the navigation container. This ensures the toast appears above the navigation bar.
 >
 > ```swift
 > NavigationStack {
 >    // Content
 > }
-> .toast($toast) // Correct placement
+> .toast($toast)
 > ```
 
-### Full Configuration
+<br/>
 
-You can customize the toast role, icon, duration, placement, and haptic feedback:
+## ⚙️ Full Configuration
 
 ```swift
 Toast(
     message: "Network error occurred",
     role: .error,
-    icon: "wifi.slash",        // Custom SF Symbol
+    icon: "wifi.slash",
     placement: .top,
-    duration: .long,           // 4 seconds
-    haptic: .error             // Triggers error haptic feedback
+    duration: .long,
+    haptic: .error
 )
 ```
 
-**Supported Roles:**
+### Supported Roles
 
-- `.success`
-- `.error`
-- `.warning`
-- `.info`
+* `.success`
+* `.error`
+* `.warning`
+* `.info`
 
-**Supported Durations:**
+### Supported Durations
 
-- `.short` (2s)
-- `.long` (4s)
-- `.custom(TimeInterval)`
-- `.indefinite` (Explicit dismissal required)
+* `.short` (2s)
+* `.long` (4s)
+* `.custom(TimeInterval)`
+* `.indefinite`
 
-### Styling
+<br/>
 
-NoticeUI comes with three built-in styles. You can apply a style globally or to a specific toast.
+## 🎨 Styling
 
-**1. Glass Style (Default)**
-A translucent, frosted-glass look.
+### Glass (Default)
 
 ```swift
 .toast($toast, style: GlassToastStyle())
 ```
 
-**2. Vibrant Style**
-High-contrast, solid background colors. Best for critical alerts.
+### Vibrant
 
 ```swift
 .toast($toast, style: VibrantToastStyle())
 ```
 
-**3. Pale Style**
-Subtle, light background with a role-colored accent border.
+### Pale
 
 ```swift
 .toast($toast, style: PaleToastStyle())
 ```
 
-### Global Styling
+### Global Style
 
-Apply a style to an entire view hierarchy using the environment:
+Apply a style to an entire view hierarchy using the environment.
 
 ```swift
 @main
@@ -138,42 +155,58 @@ struct MyApp: App {
 }
 ```
 
-## Interactive Features
+<br/>
 
-### Swipe to Dismiss
+## 🤏 Interactions
 
-Toasts support swipe gestures to dismiss them early:
+**Swipe to dismiss**
 
-- **Top placement**: Swipe UP to dismiss
-- **Bottom placement**: Swipe DOWN to dismiss
-- **Center placement**: Swipe LEFT or RIGHT to dismiss
+| Placement | Gesture          |
+| --------- | ---------------- |
+| Top       | Swipe up         |
+| Bottom    | Swipe down       |
+| Center    | Swipe left/right |
 
-### Haptic Feedback
+<br/>
 
-NoticeUI includes a `ToastHapticFeedback` system that can trigger haptics when a toast appears.
+## 📳 Haptic Feedback
 
-- `.success`: Light impact followed by heavy impact
-- `.error`: Series of heavy impacts
-- `.warning`: Medium impact
-- `.light`, `.medium`, `.heavy`: Standard impacts
-- `.automatic`: Automatically picks the haptic based on the toast role
+Built-in feedback system:
 
-## Accessibility
+* Automatic by role
+* Success, error, warning
+* Light / medium / heavy
 
-NoticeUI is built with accessibility as a priority:
+<br/>
 
-- **VoiceOver**: Automatically announces (or "speaks") the toast message when it appears.
-- **Role Context**: Announcements include the role (e.g., "Error: Network failed") for context.
-- **Reduce Motion**: Respects the user's "Reduce Motion" system setting by using simpler fade animations instead of slides.
-- **Dynamic Type**: Supports dynamic text scaling.
-- **Time Extension**: Automatically extends specific durations (1.5x) when VoiceOver is active to give users more time to read.
+## ♿ Accessibility
 
-## Requirements
+NoticeUI is designed for real-world accessibility:
 
-- iOS 16.0+
-- macOS 13.0+
-- Swift 5.7+
+* VoiceOver announcements
+* Role-aware context
+* Reduce Motion support
+* Dynamic Type scaling
+* Extended display time when VoiceOver is active
 
-## License
+<br/>
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+## 🚫 When Not to Use
+
+* If you need system notifications
+* If you support iOS below 16
+* If you rely heavily on UIKit overlays
+
+<br/>
+
+## 📋 Requirements
+
+* iOS 16.0+
+* macOS 13.0+
+* Swift 5.7+
+
+<br/>
+
+## 📄 License
+
+MIT License — see [LICENSE](LICENSE)
