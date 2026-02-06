@@ -4,6 +4,10 @@ import SwiftUI
 import UIKit
 #endif
 
+#if canImport(AppKit)
+import AppKit
+#endif
+
 /// Internal view that renders a toast using the current style.
 ///
 /// `ToastView` is responsible for:
@@ -52,6 +56,13 @@ struct ToastView: View {
             return EdgeInsets()
         }
         let insets = window.safeAreaInsets
+        return EdgeInsets(top: insets.top, leading: insets.left, bottom: insets.bottom, trailing: insets.right)
+        #elseif canImport(AppKit)
+        guard let window = NSApplication.shared.keyWindow ?? NSApplication.shared.windows.first,
+              let contentView = window.contentView else {
+            return EdgeInsets()
+        }
+        let insets = contentView.safeAreaInsets
         return EdgeInsets(top: insets.top, leading: insets.left, bottom: insets.bottom, trailing: insets.right)
         #else
         return EdgeInsets()
