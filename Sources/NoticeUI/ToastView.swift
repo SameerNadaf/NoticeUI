@@ -66,7 +66,8 @@ struct ToastView: View {
                 icon: toast.icon
             )
         )
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: 500)
+        .frame(maxWidth: .infinity, alignment: .center)
         .padding(.horizontal, 16)
     }
     
