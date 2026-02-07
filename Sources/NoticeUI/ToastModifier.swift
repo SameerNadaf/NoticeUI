@@ -27,14 +27,31 @@ struct ToastModifier: ViewModifier {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay {
                 if let toast {
-                    ToastView(toast: toast, isPresented: isPresented)
+                    // Create a toast copy with wrapped actions that auto-dismiss
+                    let displayedToast = Toast(
+                        message: toast.message,
+                        role: toast.role,
+                        icon: toast.icon,
+                        placement: toast.placement,
+                        duration: toast.duration,
+                        haptic: toast.haptic,
+                        actions: toast.actions.map { originalAction in
+                            ToastAction(
+                                id: originalAction.id,
+                                title: originalAction.title,
+                                role: originalAction.role
+                            ) {
+                                originalAction.action()
+                                dismissToast()
+                            }
+                        }
+                    )
+                    
+                    ToastView(toast: displayedToast, isPresented: isPresented)
                         .environment(\.toastStyle, style)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .ignoresSafeArea()
                         .swipeToDismiss(placement: toast.placement) {
-                            dismissToast()
-                        }
-                        .onTapGesture {
                             dismissToast()
                         }
                         .accessibilityElement(children: .combine)
@@ -67,6 +84,22 @@ struct ToastModifier: ViewModifier {
             
             // Announce to VoiceOver
             announceToast(toast)
+            
+            // Wrap actions to include dismissal
+            let wrappedActions = toast.actions.map { originalAction in
+                ToastAction(
+                    id: originalAction.id, // Preserve ID
+                    title: originalAction.title,
+                    role: originalAction.role
+                ) {
+                    originalAction.action()
+                    dismissToast()
+                }
+            }
+            
+            // Create a temporary toast with wrapped actions for display
+            // We only need this for the View to render, we don't update the binding
+            // to avoid infinite loops. The ToastView will use this instance.
             
             // Schedule auto-dismiss if not indefinite
             if let duration = toast.duration.timeInterval {
