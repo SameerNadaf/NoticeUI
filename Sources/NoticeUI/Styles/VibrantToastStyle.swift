@@ -27,16 +27,39 @@ public struct VibrantToastStyle: ToastStyle, Sendable {
                         .foregroundStyle(.white)
                 )
             
-            // Text content
-            VStack(alignment: .leading, spacing: 2) {
-                Text(roleTitle(for: configuration.role))
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.white)
+            // Content and Actions
+            VStack(alignment: .leading, spacing: 8) {
+                // Text content
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(roleTitle(for: configuration.role))
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.white)
+                    
+                    Text(configuration.message)
+                        .font(.footnote)
+                        .foregroundStyle(.white.opacity(0.85))
+                        .lineLimit(2)
+                }
                 
-                Text(configuration.message)
-                    .font(.footnote)
-                    .foregroundStyle(.white.opacity(0.85))
-                    .lineLimit(2)
+                // Actions
+                if !configuration.actions.isEmpty {
+                    HStack(spacing: 8) {
+                        ForEach(configuration.actions) { action in
+                            Button(action: action.action) {
+                                Text(action.title)
+                                    .font(.caption.weight(.semibold))
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(roleColor(for: configuration.role)) // Use role color for text
+                            .background(
+                                Capsule()
+                                    .fill(.white) // White background for contrast
+                            )
+                        }
+                    }
+                }
             }
             
             Spacer(minLength: 0)
@@ -47,40 +70,53 @@ public struct VibrantToastStyle: ToastStyle, Sendable {
             VibrantBackgroundView(role: configuration.role)
         )
     }
-    
-    // MARK: - Private Helpers
-    
-    private func icon(for configuration: ToastStyleConfiguration) -> Image {
-        if let customIcon = configuration.icon {
-            return Image(systemName: customIcon)
-        }
-        return roleIcon(for: configuration.role)
+}
+
+// MARK: - Private Helpers
+
+private func icon(for configuration: ToastStyleConfiguration) -> Image {
+    if let customIcon = configuration.icon {
+        return Image(systemName: customIcon)
     }
-    
-    private func roleIcon(for role: ToastRole) -> Image {
-        switch role {
-        case .success:
-            return Image(systemName: "checkmark")
-        case .error:
-            return Image(systemName: "info")
-        case .warning:
-            return Image(systemName: "exclamationmark")
-        case .info:
-            return Image(systemName: "info")
-        }
+    return roleIcon(for: configuration.role)
+}
+
+private func roleIcon(for role: ToastRole) -> Image {
+    switch role {
+    case .success:
+        return Image(systemName: "checkmark")
+    case .error:
+        return Image(systemName: "info")
+    case .warning:
+        return Image(systemName: "exclamationmark")
+    case .info:
+        return Image(systemName: "info")
     }
-    
-    private func roleTitle(for role: ToastRole) -> String {
-        switch role {
-        case .success:
-            return "Success"
-        case .error:
-            return "Error"
-        case .warning:
-            return "Warning"
-        case .info:
-            return "Info"
-        }
+}
+
+private func roleTitle(for role: ToastRole) -> String {
+    switch role {
+    case .success:
+        return "Success"
+    case .error:
+        return "Error"
+    case .warning:
+        return "Warning"
+    case .info:
+        return "Info"
+    }
+}
+
+private func roleColor(for role: ToastRole) -> Color {
+    switch role {
+    case .success:
+        return Color(red: 0.35, green: 0.78, blue: 0.62)  // Bright Mint
+    case .error:
+        return Color(red: 0.91, green: 0.45, blue: 0.47)  // Bright Red
+    case .warning:
+        return Color(red: 0.95, green: 0.77, blue: 0.35)  // Bright Gold
+    case .info:
+        return Color(red: 0.40, green: 0.65, blue: 0.88)  // Bright Blue
     }
 }
 
