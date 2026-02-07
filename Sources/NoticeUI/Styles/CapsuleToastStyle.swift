@@ -22,6 +22,29 @@ public struct CapsuleToastStyle: ToastStyle, Sendable {
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(.white)
                 .lineLimit(2)
+            
+            // Actions
+            if !configuration.actions.isEmpty {
+                
+                Spacer(minLength: 4)
+
+                HStack(spacing: 8) {
+                    ForEach(configuration.actions) { action in
+                        Button(action: action.action) {
+                            Text(action.title)
+                                .font(.caption.weight(.semibold))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(.white)
+                        .background(
+                            Capsule()
+                                .fill(.white.opacity(0.2))
+                        )
+                    }
+                }
+            }
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
