@@ -37,6 +37,9 @@ public struct Toast: Identifiable, Sendable, Equatable {
     /// Haptic feedback to trigger when toast appears.
     public let haptic: ToastHapticFeedback
     
+    /// Interactive actions available on the toast.
+    public let actions: [ToastAction]
+    
     /// Creates a new toast notification.
     /// - Parameters:
     ///   - message: The message to display.
@@ -45,13 +48,15 @@ public struct Toast: Identifiable, Sendable, Equatable {
     ///   - placement: Where to show the toast. Defaults to `.top`.
     ///   - duration: How long to show the toast. Defaults to `.short`.
     ///   - haptic: Haptic feedback to trigger. Defaults to `.none`.
+    ///   - actions: Interactive actions available on the toast. Defaults to `[]`.
     public init(
         message: String,
         role: ToastRole = .info,
         icon: String? = nil,
         placement: ToastPlacement = .top,
         duration: ToastDuration = .short,
-        haptic: ToastHapticFeedback = .automatic
+        haptic: ToastHapticFeedback = .automatic,
+        actions: [ToastAction] = []
     ) {
         self.id = UUID()
         self.message = message
@@ -60,5 +65,6 @@ public struct Toast: Identifiable, Sendable, Equatable {
         self.placement = placement
         self.duration = duration
         self.haptic = haptic
+        self.actions = actions
     }
 }
