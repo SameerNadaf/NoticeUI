@@ -4,43 +4,41 @@
 
 # NoticeUI
 
-NoticeUI is a lightweight **SwiftUI toast notification and in-app messaging library**
-for iOS and macOS — similar to snackbars and alerts — built entirely with SwiftUI.
+**NoticeUI** is the ultimate SwiftUI toast library that feels right at home on iOS & macOS.
 
-It provides a clean, state-driven API for displaying beautiful, accessible, and fully
-customizable toast messages without UIKit hacks.
+Unlike other libraries that rely on old UIKit overlays or complex view hierarchies, NoticeUI uses a **pure SwiftUI approach**. It gives you beautiful, animated, and accessible toasts with zero friction.
+
+Whether you need a simple "Success" message, an interactive "Undo" button, or a completely custom design, NoticeUI handles it with a clean, state-driven API.
 
 <br/>
 
-![NoticeUI Styles](https://github.com/SameerNadaf/Templates/blob/main/NoticeUI.png?raw=true)
+![NoticeUI Banner](https://github.com/SameerNadaf/Templates/blob/main/NoticeUI.png?raw=true)
 
 <br/>
 
 ## ✨ Why NoticeUI?
 
-- Built purely for SwiftUI (no UIKit wrappers)
-- Simple state-driven API
-- Accessibility-first by default
-- Modern animations and gestures
-- Works seamlessly on iOS & macOS
-- Easy global and per-toast styling
+- **SwiftUI Native**: Built purely for SwiftUI using `ViewModifier` and `Environment`.
+- **State-Driven**: Control presentation with a simple optional Binding (`$toast`).
+- **Interactive**: Support for action buttons in all styles.
+- **Accessible**: VoiceOver support, Dynamic Type, and Reduce Motion awareness built-in.
+- **Premium Styles**: 6+ high-quality built-in styles.
+- **Customizable**: Create your own unique toast styles easily.
+- **Haptics**: Automatic haptic feedback based on toast roles.
 
 <br/>
 
 ## 🚀 Features
 
-- **SwiftUI Native**
-- **State-Driven API**
-- **Toast Roles** — success, error, warning, info
-- **Flexible Placement** — top, center, bottom
-- **Premium Styles**
-  - `GlassToastStyle` (default frosted look)
-  - `PaleToastStyle`
-  - `VibrantToastStyle`
-- **Swipe to Dismiss**
-- **Haptic Feedback**
-- **Accessibility First**
-- **Cross-Platform Support**
+- **Toast Roles** — `.success`, `.error`, `.warning`, `.info`
+- **Flexible Placement** — `.top`, `.center`, `.bottom`
+- **Interactive Actions** — Add buttons to any toast
+- **Swipe to Dismiss** — Intuitive gesture support
+- **Rich Styles** — Glass, Vibrant, Pale, Capsule, Retro, Notification
+- **Cross-Platform** — Seamless on iOS & macOS
+- **Haptic Feedback** — Automatic and customizable vibration patterns
+- **Flexible Duration** — Short, long, indefinite, or custom time intervals
+- **Accessibility** — Built-in VoiceOver support and Dynamic Type scaling
 
 <br/>
 
@@ -49,19 +47,16 @@ customizable toast messages without UIKit hacks.
 ### Swift Package Manager
 
 1. In Xcode: **File → Add Packages...**
-2. Enter:
-
-```
-
-https://github.com/SameerNadaf/NoticeUI.git
-
-```
-
-3. Select version: **from 1.2.2**
+2. Enter: `https://github.com/SameerNadaf/NoticeUI.git`
+3. Select version: **from 1.4.0**
 
 <br/>
 
 ## 🧑‍💻 Quick Start
+
+1. Import `NoticeUI`.
+2. Create a `@State` property for your toast.
+3. Use the `.toast($toast)` modifier.
 
 ```swift
 import SwiftUI
@@ -79,7 +74,7 @@ struct ContentView: View {
 }
 ```
 
-> When using `NavigationStack` or `NavigationView`, apply the `.toast()` modifier **outside** the navigation container. This ensures the toast appears above the navigation bar.
+> **Tip:** When using `NavigationStack` or `NavigationView`, apply the `.toast()` modifier **outside** the navigation container. This ensures the toast appears above the navigation bar.
 >
 > ```swift
 > NavigationStack {
@@ -92,6 +87,8 @@ struct ContentView: View {
 
 ## ⚙️ Full Configuration
 
+The `Toast` struct offers powerful configuration options:
+
 ```swift
 Toast(
     message: "Network error occurred",
@@ -99,7 +96,12 @@ Toast(
     icon: "wifi.slash",
     placement: .top,
     duration: .long,
-    haptic: .error
+    haptic: .error,
+    actions: [
+        ToastAction(title: "Retry") {
+            // Retry logic
+        }
+    ]
 )
 ```
 
@@ -110,6 +112,12 @@ Toast(
 - `.warning`
 - `.info`
 
+### Supported Placement
+
+- `.top`
+- `.center`
+- `.bottom`
+
 ### Supported Durations
 
 - `.short` (2s)
@@ -117,58 +125,94 @@ Toast(
 - `.custom(TimeInterval)`
 - `.indefinite`
 
+### Supported Haptics
+
+- `.automatic` (default)
+- `.success`
+- `.warning`
+- `.error`
+- `.light`
+- `.medium`
+- `.heavy`
+- `.none`
+
 <br/>
 
-## 🎨 Styling
+## 🔘 Interactive Actions
 
-### Glass (Default)
-
-```swift
-.toast($toast, style: GlassToastStyle())
-```
-
-### Vibrant
+Add actionable buttons to your toasts to let users respond immediately.
 
 ```swift
-.toast($toast, style: VibrantToastStyle())
-```
-
-### Pale
-
-```swift
-.toast($toast, style: PaleToastStyle())
-```
-
-### Capsule
-
-```swift
-.toast($toast, style: CapsuleToastStyle())
-```
-
-### Retro
-
-```swift
-.toast($toast, style: RetroToastStyle())
-```
-
-### Notification
-
-```swift
-.toast($toast, style: NotificationToastStyle())
-```
-
-### Global Style
-
-Apply a style to an entire view hierarchy using the environment.
-
-```swift
-@main
-struct MyApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .toastStyle(VibrantToastStyle()) // All toasts in app will use Vibrant style
+Toast(
+    message: "Email archived",
+    role: .info,
+    actions: [
+        ToastAction(title: "Undo") {
+            archiveService.undo()
         }
+    ]
+)
+```
+
+> **Note:** Actions are completely optional. If you don't provide any actions, the toast will render in its standard non-interactive form.
+
+Interactive toasts work with **all styles**, adapting the button appearance to match the style's aesthetic:
+
+- **Glass**: Subtle buttons with glass background
+- **Vibrant**: High-contrast buttons on solid background
+- **Pale**: Bordered buttons matching the role color
+- **Capsule**: Inline horizontal buttons (perfect for compact actions)
+- **Notification**: Buttons below the message
+- **Retro**: Terminal-style command buttons
+
+<br/>
+
+## 🎨 Styles
+
+NoticeUI comes with beautiful built-in styles. You can set them per-view or globally.
+
+### Usage
+
+```swift
+// Apply to a specific view
+.toast($toast, style: GlassToastStyle())
+
+// Apply globally in your App struct
+WindowGroup {
+    ContentView()
+        .toastStyle(VibrantToastStyle())
+}
+```
+
+### Available Styles
+
+| Style                        | Description                                                          |
+| :--------------------------- | :------------------------------------------------------------------- |
+| **`GlassToastStyle`**        | User-favorite. Frosted glass effect with subtle gradients. (Default) |
+| **`VibrantToastStyle`**      | High-contrast, solid colors. Great for errors/warnings.              |
+| **`PaleToastStyle`**         | Soft backgrounds with colored accents. Good for non-intrusive info.  |
+| **`CapsuleToastStyle`**      | Compact, pill-shaped dark mode style. System-like.                   |
+| **`NotificationToastStyle`** | Mimics the native iOS notification banner look.                      |
+| **`RetroToastStyle`**        | Monospaced font, neon colors, and terminal aesthetics.               |
+
+<br/>
+
+## 🛠 Advanced Customization
+
+### Custom Styles
+
+You can create your own style by conforming to `ToastStyle`. It works just like SwiftUI's `ButtonStyle`.
+
+```swift
+struct MyCustomStyle: ToastStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            Image(systemName: "star.fill")
+            Text(configuration.message)
+        }
+        .padding()
+        .background(Color.blue)
+        .cornerRadius(8)
     }
 }
 ```
@@ -177,43 +221,66 @@ struct MyApp: App {
 
 ## 🤏 Interactions
 
-**Swipe to dismiss**
+**Swipe to dismiss** is enabled by default. The gesture direction depends on the placement:
 
-| Placement | Gesture          |
-| --------- | ---------------- |
-| Top       | Swipe up         |
-| Bottom    | Swipe down       |
-| Center    | Swipe left/right |
+- **Top**: Swipe Up
+- **Bottom**: Swipe Down
+- **Center**: Swipe Left or Right
+
+**Tap for actions**: If a toast has interactive buttons, tapping them will trigger the action. Tapping the toast body does nothing by default to prevent accidental dismissals.
 
 <br/>
 
 ## 📳 Haptic Feedback
 
-Built-in feedback system:
+NoticeUI includes a sophisticated haptic feedback system that enhances the user experience:
 
-- Automatic by role
-- Success, error, warning
-- Light / medium / heavy
+- **Automatic**: Plays feedback matching the toast's role.
+- **Customizable**: Override the default behavior or disable it entirely.
+
+| Role        | Automatic Feedback                          |
+| :---------- | :------------------------------------------ |
+| **Success** | `UINotificationFeedbackGenerator(.success)` |
+| **Error**   | `UINotificationFeedbackGenerator(.error)`   |
+| **Warning** | `UINotificationFeedbackGenerator(.warning)` |
+| **Info**    | `UIImpactFeedbackGenerator(style: .light)`  |
+
+You can also manually specify:
+
+- `.light`, `.medium`, `.heavy` (Impact)
+- `.success`, `.warning`, `.error` (Notification)
+- `.none`
+
+You can override this per-toast:
+
+```swift
+Toast(
+    message: "Data synced",
+    role: .info,
+    haptic: .success // Plays success haptic despite being an info toast
+)
+```
 
 <br/>
 
 ## ♿ Accessibility
 
-NoticeUI is designed for real-world accessibility:
+NoticeUI is built with accessibility in mind:
 
-- VoiceOver announcements
-- Role-aware context
-- Reduce Motion support
-- Dynamic Type scaling
-- Extended display time when VoiceOver is active
+- **VoiceOver**: Toasts are announced automatically as alerts.
+- **Reduce Motion**: Animations are disabled/simplified when "Reduce Motion" is on.
+- **Dynamic Type**: Text scales with system font size settings.
+- **Contrast**: Default styles are checked for readability.
 
 <br/>
 
-## 🚫 When Not to Use
+## ⚠️ Considerations
 
-- If you need system notifications
-- If you support iOS below 16
-- If you rely heavily on UIKit overlays
+NoticeUI is an **in-app** messaging system. It is not a replacement for:
+
+- **Push Notifications**: If you need to reach users when the app is closed.
+- **System Alerts**: If you need to override the ringer switch or display critical OS-level warnings.
+- **Legacy iOS**: NoticeUI requires **iOS 16+** to leverage modern SwiftUI 4.0 features.
 
 <br/>
 
@@ -227,4 +294,4 @@ NoticeUI is designed for real-world accessibility:
 
 ## 📄 License
 
-MIT License — see [LICENSE](LICENSE)
+MIT License — see [LICENSE](LICENSE) for details.
