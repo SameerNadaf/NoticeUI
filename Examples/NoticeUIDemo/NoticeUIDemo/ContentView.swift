@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var placement: ToastPlacement = .top
     @State private var selectedDuration: DemoDuration = .short
     @State private var showCustomIcon: Bool = false
+    @State private var showAction: Bool = false
     @State private var useHaptics: Bool = true
 
     enum ToStringStyle: String, CaseIterable, Identifiable {
@@ -79,6 +80,7 @@ struct ContentView: View {
                     }
                     
                     Toggle("Use Custom Icon", isOn: $showCustomIcon)
+                    Toggle("Add Action", isOn: $showAction)
                     Toggle("Haptic Feedback", isOn: $useHaptics)
                 }
                 
@@ -137,13 +139,33 @@ struct ContentView: View {
     }
     
     private func showToast(message: String, role: ToastRole) {
+        var actions: [ToastAction] = []
+        
+        if showAction {
+            actions.append(
+                ToastAction(title: "Undo") {
+                    print("Undo tapped for \(message)")
+                }
+            )
+            
+            // Add a second action for error role to demonstrate multiple actions
+            if role == .error {
+                actions.append(
+                    ToastAction(title: "Retry") {
+                        print("Retry tapped")
+                    }
+                )
+            }
+        }
+        
         toast = Toast(
             message: message,
             role: role,
             icon: showCustomIcon ? "star.fill" : nil,
             placement: placement,
             duration: selectedDuration.value,
-            haptic: useHaptics ? .automatic : .none
+            haptic: useHaptics ? .automatic : .none,
+            actions: actions
         )
     }
     
