@@ -38,6 +38,27 @@ public struct NotificationToastStyle: ToastStyle, Sendable {
                 .font(.subheadline)
                 .foregroundStyle(.primary)
                 .lineLimit(3)
+            
+            // Actions
+            if !configuration.actions.isEmpty {
+                HStack(spacing: 8) {
+                    ForEach(configuration.actions) { action in
+                        Button(action: action.action) {
+                            Text(action.title)
+                                .font(.caption.weight(.semibold))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(roleColor(for: configuration.role))
+                        .background(
+                            Capsule()
+                                .fill(roleColor(for: configuration.role).opacity(0.1))
+                        )
+                    }
+                }
+                .padding(.top, 4)
+            }
         }
         .padding(12)
         .background(
