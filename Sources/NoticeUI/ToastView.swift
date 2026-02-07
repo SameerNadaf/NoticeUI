@@ -74,7 +74,8 @@ struct ToastView: View {
             configuration: ToastStyleConfiguration(
                 message: toast.message,
                 role: toast.role,
-                icon: toast.icon
+                icon: toast.icon,
+                actions: toast.actions
             )
         )
         .frame(maxWidth: 500)
