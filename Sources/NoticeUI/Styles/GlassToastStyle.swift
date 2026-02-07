@@ -28,16 +28,39 @@ public struct GlassToastStyle: ToastStyle, Sendable {
                         .foregroundStyle(roleColor(for: configuration.role))
                 )
             
-            // Text content
-            VStack(alignment: .leading, spacing: 2) {
-                Text(roleTitle(for: configuration.role))
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.primary)
+            // Content and Actions
+            VStack(alignment: .leading, spacing: 8) {
+                // Text content
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(roleTitle(for: configuration.role))
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
+                    
+                    Text(configuration.message)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
                 
-                Text(configuration.message)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
+                // Actions
+                if !configuration.actions.isEmpty {
+                    HStack(spacing: 8) {
+                        ForEach(configuration.actions) { action in
+                            Button(action: action.action) {
+                                Text(action.title)
+                                    .font(.caption.weight(.semibold))
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(roleColor(for: configuration.role))
+                            .background(
+                                Capsule()
+                                    .fill(roleColor(for: configuration.role).opacity(0.15))
+                            )
+                        }
+                    }
+                }
             }
             
             Spacer(minLength: 0)
