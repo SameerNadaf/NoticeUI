@@ -29,6 +29,22 @@ public struct RetroToastStyle: ToastStyle, Sendable {
                     .font(.system(.footnote, design: .monospaced))
                     .foregroundStyle(roleColor(for: configuration.role))
                     .lineLimit(2)
+                
+                // Actions
+                if !configuration.actions.isEmpty {
+                    HStack(spacing: 8) {
+                        ForEach(configuration.actions) { action in
+                            Button(action: action.action) {
+                                Text("[\(action.title.uppercased())]")
+                                    .font(.system(.caption, design: .monospaced))
+                                    .fontWeight(.bold)
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(roleColor(for: configuration.role))
+                        }
+                    }
+                    .padding(.top, 4)
+                }
             }
             
             Spacer(minLength: 0)
