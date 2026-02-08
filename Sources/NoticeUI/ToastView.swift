@@ -29,7 +29,11 @@ struct ToastView: View {
                 switch toast.placement {
                 case .top:
                     toastContent
+                        #if os(macOS)
                         .padding(.top, safeArea.top + 16)
+                        #else
+                        .padding(.top, safeArea.top + 4)
+                        #endif
                     Spacer()
                 case .center:
                     Spacer()
@@ -38,7 +42,7 @@ struct ToastView: View {
                 case .bottom:
                     Spacer()
                     toastContent
-                        .padding(.bottom, safeArea.bottom + 16)
+                        .padding(.bottom, safeArea.bottom > 0 ? safeArea.bottom + 4 : 16)
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
