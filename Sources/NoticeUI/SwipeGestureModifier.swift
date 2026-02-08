@@ -14,7 +14,7 @@ struct SwipeToDismissModifier: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     
     /// Threshold distance to trigger dismissal
-    private let dismissThreshold: CGFloat = 50
+    private let dismissThreshold: CGFloat = 40
     
     func body(content: Content) -> some View {
         content
