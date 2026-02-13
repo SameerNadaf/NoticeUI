@@ -103,10 +103,12 @@ struct ToastModifier: ViewModifier {
                 withAnimation {
                     isPresented = false
                 }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                let work = DispatchWorkItem { [self] in
                     activeToast = nil
                     present(newToast)
                 }
+                workItem = work
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: work)
             } else {
                 present(newToast)
             }
@@ -174,10 +176,12 @@ struct ToastModifier: ViewModifier {
         guard !queue.isEmpty else { return }
         let next = queue.removeFirst()
         
-        // Brief pause between toasts for visual breathing room
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        workItem?.cancel()
+        let work = DispatchWorkItem { [self] in
             present(next)
         }
+        workItem = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: work)
     }
     
     // MARK: - Accessibility
