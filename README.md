@@ -4,11 +4,11 @@
 
 # NoticeUI
 
-**NoticeUI** is the ultimate SwiftUI toast library that feels right at home on iOS & macOS.
+**NoticeUI** is a fully SwiftUI-native toast and in-app notification framework for iOS and macOS, designed around predictable state management and built-in queue handling.
 
-Unlike other libraries that rely on old UIKit overlays or complex view hierarchies, NoticeUI uses a **pure SwiftUI approach**. It gives you beautiful, animated, and accessible toasts with zero friction.
+Unlike libraries that rely on UIKit overlays or fragile view hierarchies, NoticeUI integrates directly into SwiftUI using bindings, environment values, and view modifiers — ensuring clean architecture, smooth animations, and reliable presentation.
 
-Whether you need a simple "Success" message, an interactive "Undo" button, or a completely custom design, NoticeUI handles it with a clean, state-driven API.
+From quick success messages to interactive actions like **Undo**, or fully custom designs, NoticeUI provides a flexible, state-driven API with multiple queue modes to handle real-world messaging flows without extra glue code.
 
 <br/>
 
@@ -25,6 +25,7 @@ Whether you need a simple "Success" message, an interactive "Undo" button, or a 
 - **Premium Styles**: 6+ high-quality built-in styles.
 - **Customizable**: Create your own unique toast styles easily.
 - **Haptics**: Automatic haptic feedback based on toast roles.
+- **Queue Management**: Built-in FIFO (default), `replaceAll`, and `priority` modes with predictable ordering and immediate binding reset after enqueue.
 
 <br/>
 
@@ -34,6 +35,7 @@ Whether you need a simple "Success" message, an interactive "Undo" button, or a 
 - **Flexible Placement** — `.top`, `.center`, `.bottom`
 - **Interactive Actions** — Add buttons to any toast
 - **Swipe to Dismiss** — Intuitive gesture support
+- **Queue Management** — FIFO, replaceAll, priority
 - **Rich Styles** — Glass, Vibrant, Pale, Capsule, Retro, Notification
 - **Cross-Platform** — Seamless on iOS & macOS
 - **Haptic Feedback** — Automatic and customizable vibration patterns
@@ -82,6 +84,8 @@ struct ContentView: View {
 > }
 > .toast($toast)
 > ```
+>
+> **Note:** By default, toasts are enqueued (FIFO). The binding is reset to `nil` immediately after enqueue so you can trigger again without extra state handling.
 
 <br/>
 
@@ -135,6 +139,87 @@ Toast(
 - `.medium`
 - `.heavy`
 - `.none`
+
+<br/>
+
+## 🚦 Queue Management
+
+Control how multiple toasts are handled when triggered in quick succession.
+
+### Queue Modes
+
+| Mode | Description |
+| :--- | :--- |
+| **`.fifo`** | Default. Toasts are shown one by one in the order they were added. |
+| **`.replaceAll`** | Immediate. The new toast replaces the current one and clears the queue. |
+| **`.priority`** | Smart. Critical messages jump to the front (`.error` > `.warning` > `.success` > `.info`). |
+
+### Usage
+
+```swift
+// Standard FIFO behavior
+.toast($toast, queueMode: .fifo)
+
+// Immediate replacement (useful for live status updates)
+.toast($toast, queueMode: .replaceAll)
+
+// Priority-based (Errors shown first)
+.toast($toast, queueMode: .priority)
+```
+
+### Examples
+
+```swift
+// Example: Rapid triggers (FIFO)
+struct ExampleFIFO: View {
+    @State private var toast: Toast?
+    var body: some View {
+        VStack {
+            Button("Trigger 1") { toast = Toast(message: "Info 1", role: .info) }
+            Button("Trigger 2") { toast = Toast(message: "Info 2", role: .info) }
+            Button("Trigger 3") { toast = Toast(message: "Info 3", role: .info) }
+        }
+        .toast($toast, queueMode: .fifo)
+    }
+}
+```
+
+```swift
+// Example: Live status (replaceAll)
+struct ExampleReplaceAll: View {
+    @State private var toast: Toast?
+    var body: some View {
+        VStack {
+            Button("Loading…") { toast = Toast(message: "Loading", role: .info) }
+            Button("Connected") { toast = Toast(message: "Connected", role: .success) }
+        }
+        .toast($toast, queueMode: .replaceAll)
+    }
+}
+```
+
+```swift
+// Example: Mixed severity (priority)
+struct ExamplePriority: View {
+    @State private var toast: Toast?
+    var body: some View {
+        VStack {
+            Button("Info") { toast = Toast(message: "FYI", role: .info) }
+            Button("Warning") { toast = Toast(message: "Heads up", role: .warning) }
+            Button("Error") { toast = Toast(message: "Failed to save", role: .error) }
+        }
+        .toast($toast, queueMode: .priority)
+    }
+}
+```
+
+### Behavior Notes
+
+- Each `Toast` has a unique ID to preserve queue order.
+- The binding is consumed and reset to `nil` after enqueueing.
+- Priority mode preserves insertion order within the same role.
+- A brief visual pause (~0.2s) occurs between toasts.
+- Dismiss animation completes (~0.35s) before showing the next toast.
 
 <br/>
 
@@ -228,6 +313,7 @@ struct MyCustomStyle: ToastStyle {
 - **Center**: Swipe Left or Right
 
 **Tap for actions**: If a toast has interactive buttons, tapping them will trigger the action. Tapping the toast body does nothing by default to prevent accidental dismissals.
+Actions automatically dismiss the toast after the action completes.
 
 <br/>
 
@@ -268,6 +354,7 @@ Toast(
 NoticeUI is built with accessibility in mind:
 
 - **VoiceOver**: Toasts are announced automatically as alerts.
+- **Duration Extension**: When VoiceOver is active, toast durations are extended to ensure announcements complete.
 - **Reduce Motion**: Animations are disabled/simplified when "Reduce Motion" is on.
 - **Dynamic Type**: Text scales with system font size settings.
 - **Contrast**: Default styles are checked for readability.

@@ -12,4 +12,15 @@ public enum ToastRole: Sendable, Equatable {
     case warning
     /// Indicates general information.
     case info
+    
+    /// Internal priority value for queue sorting.
+    /// Higher values indicate higher severity.
+    var queuePriority: Int {
+        switch self {
+        case .error:   return 3
+        case .warning: return 2
+        case .success: return 1
+        case .info:    return 0
+        }
+    }
 }

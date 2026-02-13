@@ -8,9 +8,10 @@ import UIKit
 import AppKit
 #endif
 
-/// A view modifier that presents a toast notification.
+/// A view modifier that presents toast notifications with queue support.
 ///
 /// This modifier handles:
+/// - Queuing multiple toasts and showing them one at a time
 /// - Showing and hiding the toast with animation
 /// - Auto-dismissing based on duration
 /// - Accessibility announcements
@@ -18,24 +19,27 @@ import AppKit
 struct ToastModifier: ViewModifier {
     @Binding var toast: Toast?
     let style: AnyToastStyle
+    let queueMode: ToastQueueMode
     
-    @State private var workItem: DispatchWorkItem?
+    @State private var queue: [Toast] = []
+    @State private var activeToast: Toast?
     @State private var isPresented = false
+    @State private var workItem: DispatchWorkItem?
     
     func body(content: Content) -> some View {
         content
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay {
-                if let toast {
+                if let activeToast {
                     // Create a toast copy with wrapped actions that auto-dismiss
                     let displayedToast = Toast(
-                        message: toast.message,
-                        role: toast.role,
-                        icon: toast.icon,
-                        placement: toast.placement,
-                        duration: toast.duration,
-                        haptic: toast.haptic,
-                        actions: toast.actions.map { originalAction in
+                        message: activeToast.message,
+                        role: activeToast.role,
+                        icon: activeToast.icon,
+                        placement: activeToast.placement,
+                        duration: activeToast.duration,
+                        haptic: activeToast.haptic,
+                        actions: activeToast.actions.map { originalAction in
                             ToastAction(
                                 id: originalAction.id,
                                 title: originalAction.title,
@@ -51,11 +55,11 @@ struct ToastModifier: ViewModifier {
                         .environment(\.toastStyle, style)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .ignoresSafeArea()
-                        .swipeToDismiss(placement: toast.placement) {
+                        .swipeToDismiss(placement: activeToast.placement) {
                             dismissToast()
                         }
                         .accessibilityElement(children: .combine)
-                        .accessibilityLabel(accessibilityLabel(for: toast))
+                        .accessibilityLabel(accessibilityLabel(for: activeToast))
                         .accessibilityAddTraits(.isStaticText)
                         .allowsHitTesting(true)
                         .zIndex(999)
@@ -66,57 +70,85 @@ struct ToastModifier: ViewModifier {
             }
     }
     
-    // MARK: - Toast Lifecycle
+    // MARK: - Queue Management
     
     private func handleToastChange(to newValue: Toast?) {
-        // Cancel any pending dismiss
-        workItem?.cancel()
-        workItem = nil
+        guard let newToast = newValue else { return }
         
-        if let toast = newValue {
-            // Show toast
-            withAnimation {
-                isPresented = true
+        // Consume the binding immediately so it's ready for the next toast
+        DispatchQueue.main.async {
+            toast = nil
+        }
+        
+        enqueue(newToast)
+    }
+    
+    private func enqueue(_ newToast: Toast) {
+        switch queueMode {
+        case .fifo:
+            if activeToast == nil {
+                present(newToast)
+            } else {
+                queue.append(newToast)
             }
             
-            // Trigger haptic feedback
-            toast.haptic.trigger(for: toast.role)
+        case .replaceAll:
+            // Cancel any pending dismiss
+            workItem?.cancel()
+            workItem = nil
+            queue.removeAll()
             
-            // Announce to VoiceOver
-            announceToast(toast)
-            
-            // Wrap actions to include dismissal
-            let wrappedActions = toast.actions.map { originalAction in
-                ToastAction(
-                    id: originalAction.id, // Preserve ID
-                    title: originalAction.title,
-                    role: originalAction.role
-                ) {
-                    originalAction.action()
-                    dismissToast()
+            if activeToast != nil {
+                // Dismiss current, then show new
+                withAnimation {
+                    isPresented = false
                 }
+                let work = DispatchWorkItem { [self] in
+                    activeToast = nil
+                    present(newToast)
+                }
+                workItem = work
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: work)
+            } else {
+                present(newToast)
             }
             
-            // Create a temporary toast with wrapped actions for display
-            // We only need this for the View to render, we don't update the binding
-            // to avoid infinite loops. The ToastView will use this instance.
-            
-            // Schedule auto-dismiss if not indefinite
-            if let duration = toast.duration.timeInterval {
-                let voiceOverEnabled = isVoiceOverRunning
-                let adjustedDuration = voiceOverEnabled ? duration * 1.5 : duration
-                scheduleDismiss(after: adjustedDuration)
-            }
-
-        } else {
-            // Hide toast
-            withAnimation {
-                isPresented = false
+        case .priority:
+            if activeToast == nil {
+                present(newToast)
+            } else {
+                queue.append(newToast)
+                // Sort by priority (highest first)
+                queue.sort { $0.role.queuePriority > $1.role.queuePriority }
             }
         }
     }
     
+    // MARK: - Toast Lifecycle
+    
+    private func present(_ toast: Toast) {
+        activeToast = toast
+        
+        withAnimation {
+            isPresented = true
+        }
+        
+        // Trigger haptic feedback
+        toast.haptic.trigger(for: toast.role)
+        
+        // Announce to VoiceOver
+        announceToast(toast)
+        
+        // Schedule auto-dismiss if not indefinite
+        if let duration = toast.duration.timeInterval {
+            let voiceOverEnabled = isVoiceOverRunning
+            let adjustedDuration = voiceOverEnabled ? duration * 1.5 : duration
+            scheduleDismiss(after: adjustedDuration)
+        }
+    }
+    
     private func scheduleDismiss(after duration: TimeInterval) {
+        workItem?.cancel()
         let work = DispatchWorkItem { [self] in
             dismissToast()
         }
@@ -132,10 +164,24 @@ struct ToastModifier: ViewModifier {
             isPresented = false
         }
         
-        // Delay clearing the toast to allow animation to complete
+        // Delay clearing the toast to allow animation to complete, then advance
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-            toast = nil
+            activeToast = nil
+            advance()
         }
+    }
+    
+    /// Advances to the next toast in the queue.
+    private func advance() {
+        guard !queue.isEmpty else { return }
+        let next = queue.removeFirst()
+        
+        workItem?.cancel()
+        let work = DispatchWorkItem { [self] in
+            present(next)
+        }
+        workItem = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: work)
     }
     
     // MARK: - Accessibility
@@ -154,18 +200,14 @@ struct ToastModifier: ViewModifier {
         let announcement = accessibilityLabel(for: toast)
         
         #if canImport(UIKit)
-        // Post accessibility announcement
-        // Errors are announced immediately, others use standard posting
         if toast.role == .error {
             UIAccessibility.post(notification: .announcement, argument: announcement)
         } else {
-            // Slight delay for non-critical announcements
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 UIAccessibility.post(notification: .announcement, argument: announcement)
             }
         }
         #elseif canImport(AppKit)
-        // macOS doesn't have the same announcement API, use NSAccessibility
         NSAccessibility.post(element: NSApp as Any, notification: .announcementRequested, userInfo: [
             .announcement: announcement,
             .priority: toast.role == .error ? NSAccessibilityPriorityLevel.high : NSAccessibilityPriorityLevel.medium
