@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var selectedStyle: ToStringStyle = .pale
     @State private var placement: ToastPlacement = .top
     @State private var selectedDuration: DemoDuration = .short
+    @State private var selectedQueueMode: ToastQueueMode = .fifo
     @State private var showCustomIcon: Bool = false
     @State private var showAction: Bool = false
     @State private var useHaptics: Bool = true
@@ -79,6 +80,13 @@ struct ContentView: View {
                         }
                     }
                     
+                    Picker("Queue Mode", selection: $selectedQueueMode) {
+                        Text("FIFO").tag(ToastQueueMode.fifo)
+                        Text("Replace").tag(ToastQueueMode.replaceAll)
+                        Text("Priority").tag(ToastQueueMode.priority)
+                    }
+                    .pickerStyle(.segmented)
+                    
                     Toggle("Use Custom Icon", isOn: $showCustomIcon)
                     Toggle("Add Action", isOn: $showAction)
                     Toggle("Haptic Feedback", isOn: $useHaptics)
@@ -126,16 +134,28 @@ struct ContentView: View {
                     }
                 }
                 
-                Section("Features") {
-                    Text("• Swipe to dismiss enabled")
-                    Text("• Dynamic haptic feedback")
-                    Text("• VoiceOver accessibility support")
+                Section("Queue Demo") {
+                    Button {
+                        showToast(message: "Step 1: Downloading...", role: .info)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                            showToast(message: "Step 3: Complete!", role: .success)
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            showToast(message: "Step 2: Processing...", role: .warning)
+                        }
+                    } label: {
+                        Label("Queue 3 Toasts", systemImage: "arrow.triangle.2.circlepath")
+                            .foregroundStyle(.purple)
+                    }
+                    
+                    Text("Fires 3 toasts in rapid succession. Watch them appear one after another based on queue mode.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
-                .foregroundStyle(.secondary)
             }
             .navigationTitle("NoticeUI Demo")
         }
-        .toast($toast, style: currentStyle)
+        .toast($toast, style: currentStyle, queueMode: selectedQueueMode)
     }
     
     private func showToast(message: String, role: ToastRole) {
