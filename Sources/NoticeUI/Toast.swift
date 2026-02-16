@@ -19,6 +19,9 @@ public struct Toast: Identifiable, Sendable, Equatable {
     /// Unique identifier for this toast.
     public let id: UUID
     
+    /// The title to display. Defaults to `.automatic`.
+    public let title: ToastTitle
+    
     /// The message to display.
     public let message: String
     
@@ -42,14 +45,17 @@ public struct Toast: Identifiable, Sendable, Equatable {
     
     /// Creates a new toast notification.
     /// - Parameters:
+    ///   - title: The title to display. Defaults to `.automatic` (uses role name).
+    ///            Pass `nil` to hide the title.
     ///   - message: The message to display.
     ///   - role: The semantic role. Defaults to `.info`.
     ///   - icon: Optional custom SF Symbol name. Defaults to `nil` (uses role icon).
     ///   - placement: Where to show the toast. Defaults to `.top`.
     ///   - duration: How long to show the toast. Defaults to `.short`.
-    ///   - haptic: Haptic feedback to trigger. Defaults to `.none`.
+    ///   - haptic: Haptic feedback to trigger. Defaults to `.automatic`.
     ///   - actions: Interactive actions available on the toast. Defaults to `[]`.
     public init(
+        title: ToastTitle = .automatic,
         message: String,
         role: ToastRole = .info,
         icon: String? = nil,
@@ -59,6 +65,7 @@ public struct Toast: Identifiable, Sendable, Equatable {
         actions: [ToastAction] = []
     ) {
         self.id = UUID()
+        self.title = title
         self.message = message
         self.role = role
         self.icon = icon
