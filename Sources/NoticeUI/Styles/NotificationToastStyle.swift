@@ -21,9 +21,11 @@ public struct NotificationToastStyle: ToastStyle, Sendable {
                     .foregroundStyle(roleColor(for: configuration.role))
                 
                 // Title
-                Text(roleTitle(for: configuration.role).uppercased())
-                    .font(.caption2.weight(.medium))
-                    .foregroundStyle(.secondary)
+                if let titleText = title(for: configuration) {
+                    Text(titleText.uppercased())
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
                 
                 Spacer()
                 
@@ -87,6 +89,17 @@ public struct NotificationToastStyle: ToastStyle, Sendable {
             return Image(systemName: "exclamationmark.triangle.fill")
         case .info:
             return Image(systemName: "info.circle.fill")
+        }
+    }
+    
+    private func title(for configuration: ToastStyleConfiguration) -> String? {
+        switch configuration.title {
+        case .automatic:
+            return roleTitle(for: configuration.role)
+        case .custom(let title):
+            return title
+        case .none:
+            return nil
         }
     }
     
