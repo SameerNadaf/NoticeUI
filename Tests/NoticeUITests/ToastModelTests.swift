@@ -29,7 +29,6 @@ final class ToastModelTests: XCTestCase {
         XCTAssertNotEqual(toast1, toast3, "Different content should definitely not be equal")
         
         XCTAssertEqual(toast1.message, toast2.message)
-        XCTAssertEqual(toast1.message, toast2.message)
         XCTAssertEqual(toast1.role, toast2.role)
         XCTAssertEqual(toast1.title, toast2.title)
     }
