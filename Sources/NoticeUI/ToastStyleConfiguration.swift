@@ -8,6 +8,9 @@ public struct ToastStyleConfiguration: Sendable {
     /// The message to display.
     public let message: String
     
+    /// The title to display.
+    public let title: ToastTitle
+    
     /// The semantic role of the toast.
     public let role: ToastRole
     
@@ -19,11 +22,13 @@ public struct ToastStyleConfiguration: Sendable {
     
     /// Creates a new style configuration.
     /// - Parameters:
+    ///   - title: The title to display. Defaults to `.automatic`.
     ///   - message: The message to display.
     ///   - role: The semantic role of the toast.
     ///   - icon: Optional custom SF Symbol name.
     ///   - actions: Interactive actions available on the toast.
-    public init(message: String, role: ToastRole, icon: String? = nil, actions: [ToastAction] = []) {
+    public init(title: ToastTitle = .automatic, message: String, role: ToastRole, icon: String? = nil, actions: [ToastAction] = []) {
+        self.title = title
         self.message = message
         self.role = role
         self.icon = icon
