@@ -33,6 +33,7 @@ struct ToastModifier: ViewModifier {
                 if let activeToast {
                     // Create a toast copy with wrapped actions that auto-dismiss
                     let displayedToast = Toast(
+                        title: activeToast.title,
                         message: activeToast.message,
                         role: activeToast.role,
                         icon: activeToast.icon,

@@ -76,6 +76,7 @@ struct ToastView: View {
     private var toastContent: some View {
         style.makeBody(
             configuration: ToastStyleConfiguration(
+                title: toast.title,
                 message: toast.message,
                 role: toast.role,
                 icon: toast.icon,

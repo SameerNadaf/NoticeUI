@@ -53,6 +53,7 @@ final class ToastQueueTests: XCTestCase {
     
     func testToastPreservesAllProperties() {
         let toast = Toast(
+            title: "Title",
             message: "Test",
             role: .error,
             icon: "star.fill",
@@ -64,6 +65,7 @@ final class ToastQueueTests: XCTestCase {
             ]
         )
         
+        XCTAssertEqual(toast.title, .custom("Title"))
         XCTAssertEqual(toast.message, "Test")
         XCTAssertEqual(toast.role, .error)
         XCTAssertEqual(toast.icon, "star.fill")

@@ -14,9 +14,19 @@ struct ContentView: View {
     @State private var placement: ToastPlacement = .top
     @State private var selectedDuration: DemoDuration = .short
     @State private var selectedQueueMode: ToastQueueMode = .fifo
+    @State private var titleMode: DemoTitleMode = .automatic
+    @State private var customTitle: String = "New Message"
     @State private var showCustomIcon: Bool = false
     @State private var showAction: Bool = false
     @State private var useHaptics: Bool = true
+
+    enum DemoTitleMode: String, CaseIterable, Identifiable {
+        case automatic = "Auto"
+        case custom = "Custom"
+        case none = "None"
+        
+        var id: String { rawValue }
+    }
 
     enum ToStringStyle: String, CaseIterable, Identifiable {
         case glass = "Glass"
@@ -65,6 +75,21 @@ struct ContentView: View {
                             }
                         }
                         .pickerStyle(.segmented)
+                    }
+                    
+                    VStack(alignment: .leading) {
+                        Text("Title")
+                        Picker("Title Mode", selection: $titleMode) {
+                            ForEach(DemoTitleMode.allCases) { mode in
+                                Text(mode.rawValue).tag(mode)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        
+                        if titleMode == .custom {
+                            TextField("Custom Title", text: $customTitle)
+                                .textFieldStyle(.roundedBorder)
+                        }
                     }
                     
                     Picker("Placement", selection: $placement) {
@@ -178,7 +203,15 @@ struct ContentView: View {
             }
         }
         
+        let title: ToastTitle
+        switch titleMode {
+        case .automatic: title = .automatic
+        case .custom: title = .custom(customTitle)
+        case .none: title = .none
+        }
+        
         toast = Toast(
+            title: title,
             message: message,
             role: role,
             icon: showCustomIcon ? "star.fill" : nil,

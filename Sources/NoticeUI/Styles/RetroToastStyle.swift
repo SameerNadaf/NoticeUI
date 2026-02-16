@@ -18,11 +18,13 @@ public struct RetroToastStyle: ToastStyle, Sendable {
                 .foregroundStyle(roleColor(for: configuration.role))
             
             VStack(alignment: .leading, spacing: 2) {
-                // Title (Role)
-                Text(roleTitle(for: configuration.role).uppercased())
-                    .font(.custom("Courier", size: 10))
-                    .fontWeight(.bold)
-                    .foregroundStyle(roleColor(for: configuration.role))
+                // Title (Role or Custom)
+                if let titleText = title(for: configuration) {
+                    Text(titleText.uppercased())
+                        .font(.custom("Courier", size: 10))
+                        .fontWeight(.bold)
+                        .foregroundStyle(roleColor(for: configuration.role))
+                }
                 
                 // Message
                 Text(configuration.message)
@@ -67,6 +69,17 @@ public struct RetroToastStyle: ToastStyle, Sendable {
             return Image(systemName: customIcon)
         }
         return roleIcon(for: configuration.role)
+    }
+    
+    private func title(for configuration: ToastStyleConfiguration) -> String? {
+        switch configuration.title {
+        case .automatic:
+            return roleTitle(for: configuration.role)
+        case .custom(let title):
+            return title
+        case .none:
+            return nil
+        }
     }
     
     private func roleIcon(for role: ToastRole) -> Image {

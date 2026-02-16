@@ -31,9 +31,11 @@ public struct VibrantToastStyle: ToastStyle, Sendable {
             VStack(alignment: .leading, spacing: 8) {
                 // Text content
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(roleTitle(for: configuration.role))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.white)
+                    if let titleText = title(for: configuration) {
+                        Text(titleText)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.white)
+                    }
                     
                     Text(configuration.message)
                         .font(.footnote)
@@ -79,6 +81,17 @@ private func icon(for configuration: ToastStyleConfiguration) -> Image {
         return Image(systemName: customIcon)
     }
     return roleIcon(for: configuration.role)
+}
+
+private func title(for configuration: ToastStyleConfiguration) -> String? {
+    switch configuration.title {
+    case .automatic:
+        return roleTitle(for: configuration.role)
+    case .custom(let title):
+        return title
+    case .none:
+        return nil
+    }
 }
 
 private func roleIcon(for role: ToastRole) -> Image {
