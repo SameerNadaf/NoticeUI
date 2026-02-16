@@ -89,12 +89,32 @@ struct ContentView: View {
 
 <br/>
 
+## 🏷 Titles
+
+Toasts can have a custom title, automatically use the role title (default), or have no title at all.
+
+```swift
+// Default: Uses role title (e.g., "Success", "Error")
+Toast(message: "Operation completed")
+
+// Custom Title
+Toast(title: "Saved", message: "Your changes have been saved")
+
+// No Title
+Toast(title: nil, message: "Just a message")
+```
+
+> **Note:** Use `nil` to hide the title completely. If you omit the parameter, it defaults to `.automatic`.
+
+<br/>
+
 ## ⚙️ Full Configuration
 
 The `Toast` struct offers powerful configuration options:
 
 ```swift
 Toast(
+    title: "Connection Failed",
     message: "Network error occurred",
     role: .error,
     icon: "wifi.slash",
@@ -148,11 +168,11 @@ Control how multiple toasts are handled when triggered in quick succession.
 
 ### Queue Modes
 
-| Mode | Description |
-| :--- | :--- |
-| **`.fifo`** | Default. Toasts are shown one by one in the order they were added. |
-| **`.replaceAll`** | Immediate. The new toast replaces the current one and clears the queue. |
-| **`.priority`** | Smart. Critical messages jump to the front (`.error` > `.warning` > `.success` > `.info`). |
+| Mode              | Description                                                                                |
+| :---------------- | :----------------------------------------------------------------------------------------- |
+| **`.fifo`**       | Default. Toasts are shown one by one in the order they were added.                         |
+| **`.replaceAll`** | Immediate. The new toast replaces the current one and clears the queue.                    |
+| **`.priority`**   | Smart. Critical messages jump to the front (`.error` > `.warning` > `.success` > `.info`). |
 
 ### Usage
 
