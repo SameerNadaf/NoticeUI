@@ -11,6 +11,7 @@ final class ToastModelTests: XCTestCase {
             duration: .short
         )
         
+        XCTAssertEqual(toast.title, .automatic)
         XCTAssertEqual(toast.message, "Test Message")
         XCTAssertEqual(toast.role, .success)
         XCTAssertEqual(toast.placement, .top)
@@ -28,7 +29,19 @@ final class ToastModelTests: XCTestCase {
         XCTAssertNotEqual(toast1, toast3, "Different content should definitely not be equal")
         
         XCTAssertEqual(toast1.message, toast2.message)
+        XCTAssertEqual(toast1.message, toast2.message)
         XCTAssertEqual(toast1.role, toast2.role)
+        XCTAssertEqual(toast1.title, toast2.title)
+    }
+    
+    func testToastWithCustomTitle() {
+        let toast = Toast(title: "Custom", message: "Msg")
+        XCTAssertEqual(toast.title, .custom("Custom"))
+    }
+    
+    func testToastWithNoTitle() {
+        let toast = Toast(title: nil, message: "Msg")
+        XCTAssertEqual(toast.title, .none)
     }
     
     func testToastCustomIcon() {
