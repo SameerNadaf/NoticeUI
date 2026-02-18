@@ -1,4 +1,5 @@
 import XCTest
+import SwiftUI
 @testable import NoticeUI
 
 final class ToastQueueTests: XCTestCase {
@@ -65,15 +66,15 @@ final class ToastQueueTests: XCTestCase {
             ]
         )
         
-        XCTAssertEqual(toast.title, .custom("Title"))
-        XCTAssertEqual(toast.message, "Test")
+        XCTAssertEqual(toast.title, .custom(LocalizedStringKey("Title"), "Title"))
+        XCTAssertEqual(toast.messageString, "Test")
         XCTAssertEqual(toast.role, .error)
         XCTAssertEqual(toast.icon, "star.fill")
         XCTAssertEqual(toast.placement, .bottom)
         XCTAssertEqual(toast.duration, .long)
         XCTAssertEqual(toast.haptic, .heavy)
         XCTAssertEqual(toast.actions.count, 1)
-        XCTAssertEqual(toast.actions.first?.title, "Retry")
+        XCTAssertEqual(toast.actions.first?.titleString, "Retry")
     }
     
     // MARK: - Priority Sort Stability
@@ -87,9 +88,9 @@ final class ToastQueueTests: XCTestCase {
         queue.sort { $0.role.queuePriority > $1.role.queuePriority }
         
         // Same priority toasts should maintain relative order
-        XCTAssertEqual(queue[0].message, "First info")
-        XCTAssertEqual(queue[1].message, "Second info")
-        XCTAssertEqual(queue[2].message, "Third info")
+        XCTAssertEqual(queue[0].messageString, "First info")
+        XCTAssertEqual(queue[1].messageString, "Second info")
+        XCTAssertEqual(queue[2].messageString, "Third info")
     }
     
     func testPriorityInsertionOrder() {
@@ -106,6 +107,6 @@ final class ToastQueueTests: XCTestCase {
         
         // Error should now be first
         XCTAssertEqual(queue[0].role, .error)
-        XCTAssertEqual(queue[0].message, "New error")
+        XCTAssertEqual(queue[0].messageString, "New error")
     }
 }
