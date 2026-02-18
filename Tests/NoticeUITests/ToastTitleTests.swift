@@ -1,11 +1,12 @@
 import XCTest
+import SwiftUI
 @testable import NoticeUI
 
 final class ToastTitleTests: XCTestCase {
     
     func testToastTitleEnumCases() {
         let automatic = ToastTitle.automatic
-        let custom = ToastTitle.custom("My Title")
+        let custom = ToastTitle.custom(LocalizedStringKey("My Title"), "My Title")
         let none = ToastTitle.none
         
         switch automatic {
@@ -14,7 +15,7 @@ final class ToastTitleTests: XCTestCase {
         }
         
         switch custom {
-        case .custom(let text): XCTAssertEqual(text, "My Title")
+        case .custom(_, let text): XCTAssertEqual(text, "My Title")
         default: XCTFail("Expected .custom")
         }
         
@@ -27,7 +28,7 @@ final class ToastTitleTests: XCTestCase {
     func testStringLiteralInitialization() {
         let title: ToastTitle = "Hello World"
         
-        if case .custom(let text) = title {
+        if case .custom(_, let text) = title {
             XCTAssertEqual(text, "Hello World")
         } else {
             XCTFail("String literal should create .custom case")
@@ -47,8 +48,30 @@ final class ToastTitleTests: XCTestCase {
     func testEquality() {
         XCTAssertEqual(ToastTitle.automatic, ToastTitle.automatic)
         XCTAssertEqual(ToastTitle.none, ToastTitle.none)
-        XCTAssertEqual(ToastTitle.custom("A"), ToastTitle.custom("A"))
-        XCTAssertNotEqual(ToastTitle.custom("A"), ToastTitle.custom("B"))
+        XCTAssertEqual(
+            ToastTitle.custom(LocalizedStringKey("A"), "A"),
+            ToastTitle.custom(LocalizedStringKey("A"), "A")
+        )
+        XCTAssertNotEqual(
+            ToastTitle.custom(LocalizedStringKey("A"), "A"),
+            ToastTitle.custom(LocalizedStringKey("B"), "B")
+        )
         XCTAssertNotEqual(ToastTitle.automatic, ToastTitle.none)
+    }
+    
+    func testStringValueAccessor() {
+        let custom: ToastTitle = "Test Title"
+        XCTAssertEqual(custom.stringValue, "Test Title")
+        
+        XCTAssertNil(ToastTitle.automatic.stringValue)
+        XCTAssertNil(ToastTitle.none.stringValue)
+    }
+    
+    func testLocalizedStringKeyAccessor() {
+        let custom: ToastTitle = "Test Title"
+        XCTAssertNotNil(custom.localizedStringKey)
+        
+        XCTAssertNil(ToastTitle.automatic.localizedStringKey)
+        XCTAssertNil(ToastTitle.none.localizedStringKey)
     }
 }
