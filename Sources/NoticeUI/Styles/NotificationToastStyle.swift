@@ -96,8 +96,8 @@ public struct NotificationToastStyle: ToastStyle, Sendable {
         switch configuration.title {
         case .automatic:
             return roleTitle(for: configuration.role)
-        case .custom(let title):
-            return title
+        case .custom(_, let titleString):
+            return titleString
         case .none:
             return nil
         }
