@@ -83,12 +83,12 @@ private func icon(for configuration: ToastStyleConfiguration) -> Image {
     return roleIcon(for: configuration.role)
 }
 
-private func title(for configuration: ToastStyleConfiguration) -> String? {
+private func title(for configuration: ToastStyleConfiguration) -> LocalizedStringKey? {
     switch configuration.title {
     case .automatic:
         return roleTitle(for: configuration.role)
-    case .custom(let title):
-        return title
+    case .custom(let key, _):
+        return key
     case .none:
         return nil
     }
@@ -107,7 +107,7 @@ private func roleIcon(for role: ToastRole) -> Image {
     }
 }
 
-private func roleTitle(for role: ToastRole) -> String {
+private func roleTitle(for role: ToastRole) -> LocalizedStringKey {
     switch role {
     case .success:
         return "Success"
