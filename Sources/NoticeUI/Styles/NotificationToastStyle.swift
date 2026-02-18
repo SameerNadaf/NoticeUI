@@ -22,7 +22,7 @@ public struct NotificationToastStyle: ToastStyle, Sendable {
                 
                 // Title
                 if let titleText = title(for: configuration) {
-                    Text(titleText.uppercased())
+                    Text(titleText)
                         .font(.caption2.weight(.medium))
                         .foregroundStyle(.secondary)
                 }
@@ -92,18 +92,18 @@ public struct NotificationToastStyle: ToastStyle, Sendable {
         }
     }
     
-    private func title(for configuration: ToastStyleConfiguration) -> String? {
+    private func title(for configuration: ToastStyleConfiguration) -> LocalizedStringKey? {
         switch configuration.title {
         case .automatic:
             return roleTitle(for: configuration.role)
-        case .custom(_, let titleString):
-            return titleString
+        case .custom(let key, _):
+            return key
         case .none:
             return nil
         }
     }
     
-    private func roleTitle(for role: ToastRole) -> String {
+    private func roleTitle(for role: ToastRole) -> LocalizedStringKey {
         switch role {
         case .success: return "Success"
         case .error: return "Error"
