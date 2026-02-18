@@ -37,7 +37,7 @@ public struct RetroToastStyle: ToastStyle, Sendable {
                     HStack(spacing: 8) {
                         ForEach(configuration.actions) { action in
                             Button(action: action.action) {
-                                Text("[\(action.title.uppercased())]")
+                                Text("[\(action.titleString.uppercased())]")
                                     .font(.system(.caption, design: .monospaced))
                                     .fontWeight(.bold)
                             }
@@ -75,8 +75,8 @@ public struct RetroToastStyle: ToastStyle, Sendable {
         switch configuration.title {
         case .automatic:
             return roleTitle(for: configuration.role)
-        case .custom(let title):
-            return title
+        case .custom(_, let titleString):
+            return titleString
         case .none:
             return nil
         }
