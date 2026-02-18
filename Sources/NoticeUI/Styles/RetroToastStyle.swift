@@ -20,7 +20,7 @@ public struct RetroToastStyle: ToastStyle, Sendable {
             VStack(alignment: .leading, spacing: 2) {
                 // Title (Role or Custom)
                 if let titleText = title(for: configuration) {
-                    Text(titleText.uppercased())
+                    Text(titleText)
                         .font(.custom("Courier", size: 10))
                         .fontWeight(.bold)
                         .foregroundStyle(roleColor(for: configuration.role))
@@ -71,12 +71,12 @@ public struct RetroToastStyle: ToastStyle, Sendable {
         return roleIcon(for: configuration.role)
     }
     
-    private func title(for configuration: ToastStyleConfiguration) -> String? {
+    private func title(for configuration: ToastStyleConfiguration) -> LocalizedStringKey? {
         switch configuration.title {
         case .automatic:
             return roleTitle(for: configuration.role)
-        case .custom(_, let titleString):
-            return titleString
+        case .custom(let key, _):
+            return key
         case .none:
             return nil
         }
@@ -95,7 +95,7 @@ public struct RetroToastStyle: ToastStyle, Sendable {
         }
     }
     
-    private func roleTitle(for role: ToastRole) -> String {
+    private func roleTitle(for role: ToastRole) -> LocalizedStringKey {
         switch role {
         case .success: return "SUCCESS"
         case .error: return "ERROR"
