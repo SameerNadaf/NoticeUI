@@ -83,12 +83,12 @@ public struct PaleToastStyle: ToastStyle, Sendable {
         return roleIcon(for: configuration.role)
     }
     
-    private func title(for configuration: ToastStyleConfiguration) -> String? {
+    private func title(for configuration: ToastStyleConfiguration) -> LocalizedStringKey? {
         switch configuration.title {
         case .automatic:
             return roleTitle(for: configuration.role)
-        case .custom(let title):
-            return title
+        case .custom(let key, _):
+            return key
         case .none:
             return nil
         }
@@ -107,7 +107,7 @@ public struct PaleToastStyle: ToastStyle, Sendable {
         }
     }
     
-    private func roleTitle(for role: ToastRole) -> String {
+    private func roleTitle(for role: ToastRole) -> LocalizedStringKey {
         switch role {
         case .success:
             return "Success"
