@@ -41,6 +41,7 @@ From quick success messages to interactive actions like **Undo**, or fully custo
 - **Haptic Feedback** — Automatic and customizable vibration patterns
 - **Flexible Duration** — Short, long, indefinite, or custom time intervals
 - **Accessibility** — Built-in VoiceOver support and Dynamic Type scaling
+- **Localization** — Native `LocalizedStringKey` support for multi-language apps
 
 <br/>
 
@@ -105,6 +106,49 @@ Toast(title: nil, message: "Just a message")
 ```
 
 > **Note:** Use `nil` to hide the title completely. If you omit the parameter, it defaults to `.automatic`.
+
+<br/>
+
+## 🌍 Localization
+
+NoticeUI supports `LocalizedStringKey` natively, just like SwiftUI's `Text`.
+
+### Localized Strings
+
+If you pass a string literal or a `LocalizedStringKey`, NoticeUI will attempt to localize it using your app's `Localizable.strings` (or `.xcstrings`).
+
+```swift
+// Automatically looks up "operation_completed" key
+Toast(message: "operation_completed", role: .success)
+
+// Explicit LocalizedStringKey
+let key: LocalizedStringKey = "error_network"
+Toast(message: key, role: .error)
+```
+
+### Dynamic Strings
+
+If you pass a `String` variable or interpolation, it is treated as a raw string and **not** localized.
+
+```swift
+// Renders exactly as provided (no lookup)
+let userName = "Alice"
+Toast(message: "Hello, \(userName)", role: .info)
+```
+
+### Localized Actions & Titles
+
+Localization works for titles and actions too:
+
+```swift
+Toast(
+    title: "save_success",  // Localized key
+    message: "data_saved_message", // Localized key
+    actions: [
+        ToastAction(title: "undo_action") { } // Localized button title
+    ]
+)
+```
 
 <br/>
 
