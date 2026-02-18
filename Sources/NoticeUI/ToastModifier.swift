@@ -228,6 +228,6 @@ struct ToastModifier: ViewModifier {
         case .info:
             rolePrefix = "Information"
         }
-        return "\(rolePrefix): \(toast.message)"
+        return "\(rolePrefix): \(toast.messageString)"
     }
 }
