@@ -206,7 +206,7 @@ struct ContentView: View {
         let title: ToastTitle
         switch titleMode {
         case .automatic: title = .automatic
-        case .custom: title = .custom(customTitle)
+        case .custom: title = .custom("New Message", customTitle)
         case .none: title = .none
         }
         
