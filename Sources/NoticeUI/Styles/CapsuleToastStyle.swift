@@ -50,7 +50,7 @@ public struct CapsuleToastStyle: ToastStyle, Sendable {
         .padding(.vertical, 12)
         .background(
             Capsule(style: .continuous)
-                .fill(.regularMaterial)
+                .fill(.regularMaterial.shadow(.inner(color: .white.opacity(0.1), radius: 4, x: 0, y: 4)))
                 .colorScheme(.dark) // Force dark appearance for contrast
         )
         .shadow(color: .black.opacity(0.15), radius: 10, x: 0, y: 4)
