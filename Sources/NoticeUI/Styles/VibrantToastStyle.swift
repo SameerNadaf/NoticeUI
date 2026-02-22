@@ -142,7 +142,7 @@ private struct VibrantBackgroundView: View {
     
     var body: some View {
         RoundedRectangle(cornerRadius: 12, style: .continuous)
-            .fill(backgroundColor)
+            .fill(backgroundColor.shadow(.inner(color: .white.opacity(0.15), radius: 4, x: 0, y: 4)))
     }
     
     private var backgroundColor: Color {
